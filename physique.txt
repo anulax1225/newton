@@ -1,0 +1,5 @@
+choisir un référenciel
+v = sqrt(G*M/r) <= Pour une orbite circulaire uniforme
+G = 6.67 * 10^-11
+M = masse du corp le plus massif
+r = la distance entre les astres
