@@ -4,6 +4,7 @@ Auteur: Vinayak Ambigapathy
 ********************************************************************************************/
 
 using System.CodeDom.Compiler;
+using System.Diagnostics;
 using System.Numerics;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
@@ -86,37 +87,16 @@ namespace Newton
 
         private void MouvCamRelativ(int targetIndex)
         {
-            Vector2 vCam = new Vector2(0,0);
-
             if (targetIndex >= 0 && targetIndex < lsMassiveBody.Count() && camFixed)
             {
-                Vector2 delta;
-                Vector2 dest;
-                dest = lsMassiveBody[targetIndex].position;
-                delta = dest - cam.target;
-                Console.WriteLine($"cam {cam.target} delta {delta}");
-                vCam = dest;
+                Vector2 dest = WorldToScreen(lsMassiveBody[targetIndex].position) - cam.target;
+                dest *= -1;
                 foreach (MassiveBody body in lsMassiveBody)
                 {
-                    body.position -= delta;
+                    body.position += dest;
                 }
-                camFixed = false;
-            } 
-            else if (targetIndex < 0)
-            {
-                Console.WriteLine($"COUCOU");
-                List<Vector2> lsV = new List<Vector2>();
-                foreach (MassiveBody body in lsMassiveBody)
-                {
-                    lsV.Add(body.position);
-                }
-                vCam = VectorTools.Vector2AVG(lsV);
+                Console.WriteLine($"cam {cam.target} body {WorldToScreen(lsMassiveBody[targetIndex].position)}");
             }
-            else
-            {
-                vCam = lsMassiveBody[targetIndex].position;
-            }
-            cam.target = vCam;
         }
 
         private void DrawParamInfo(MassiveBody body)
@@ -129,30 +109,33 @@ namespace Newton
         }
         private void ShowCommand()
         {
-            DrawText("Press V to see the bodys speed Vector.", (int)(cam.target.X - 1499), (int)(cam.target.Y - 900), 40, Color.WHITE);
+            DrawText("Test.", (int)(cam.offset.X / 2f * cam.zoom), -screenHeight, (int)(40 / cam.zoom), Color.WHITE);
+            DrawText("Press V to see the bodys speed Vector.", (int)(cam.target.X - 1499), (int)(cam.target.Y / cam.zoom - 900), (int)(40 / cam.zoom), Color.WHITE);
             DrawText("Left click on a body to get additional info.", (int)(cam.target.X - 1499), (int)(cam.target.Y - 800), 40, Color.WHITE);
             DrawText("Press M to hide/show the menu.", (int)(cam.target.X - 1499), (int)(cam.target.Y - 700), 40, Color.WHITE);
         }
 
         public int start()
         {
-            // Initialization
+            // Variables
             //---------------------------------------------------------
             bool isHidden = false;
             bool pause = false;
             int indexClick = -1;
             int camTarget = -1;
 
+            // Initialization
+            //---------------------------------------------------------
             cam.offset = new Vector2(screenWidth / 2, screenHeight / 2);
             cam.zoom = 0.5f;
-
             InitWindow(screenWidth, screenHeight, "La loie de Newton");
-
             // Set our game to run at 60 frames-per-second
             SetTargetFPS(60);
 
+            // Creating objects of the game
             //----------------------------------------------------------
-            lsMassiveBody.Add(GenerateBody("Troulaxia", 0, -410, 50, 4, 4.6f, 0, Color.GOLD));
+            lsMassiveBody.Add(GenerateBody("lune corva", 0, 520, 5, 1f, -9f, 0, Color.VIOLET));
+            lsMassiveBody.Add(GenerateBody("Troulaxia", 0, -450, 18, 4, 4.6f, 0, Color.GOLD));
             lsMassiveBody.Add(GenerateBody("Moncul", 0, 0, 50, 46, 0.1f, 0.1f, Color.RED));
 
             // Main game loop
@@ -160,6 +143,17 @@ namespace Newton
             {
                 // Update
                 //-----------------------------------------------------
+                MouvCamRelativ(camTarget);
+                float mouseWheelScroll = GetMouseWheelMove();
+                if (mouseWheelScroll > 0)
+                {
+                    cam.zoom += 0.1f;
+                }
+                if (mouseWheelScroll < 0)
+                {
+                    cam.zoom -= 0.1f;
+                }
+
                 if (IsKeyPressed(KeyboardKey.KEY_SPACE))
                 {
                     pause = !pause;
@@ -170,24 +164,22 @@ namespace Newton
                     isHidden = !isHidden;
                 }
 
+                if (IsKeyPressed(KeyboardKey.KEY_A))
+                {
+                    camTarget = indexClick;
+                    camFixed = !camFixed;
+                }
+
                 if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
                 {
                     indexClick = FindOnTarget(GetMousePosition());
                     Console.WriteLine("Boutton {0}", indexClick);
                 }
 
-                if (IsKeyPressed(KeyboardKey.KEY_A))
-                {
-                    camTarget = indexClick;
-                    camFixed = true;
-                }
-                MouvCamRelativ(camTarget);
-
                 // Draw
                 //-----------------------------------------------------
                 BeginDrawing();
                 BeginMode2D(cam);
-
                 ClearBackground(Color.BLACK);
 
                 if (!isHidden)
@@ -208,9 +200,10 @@ namespace Newton
                 {
                     foreach (MassiveBody body in lsMassiveBody)
                     {
-                        DrawLineV(body.position, body.speed * 100 + body.position, body.color);
+                        DrawLineV(WorldToScreen(body.position), body.speed * 100 + WorldToScreen(body.position), body.color);
                     }
                 }
+
 
                 foreach (MassiveBody body in lsMassiveBody)
                 {
@@ -231,7 +224,7 @@ namespace Newton
 
     public class MassiveBody
     {
-        const float CONSTGRAVITATION = 1;
+        const float CONSTGRAVITATION = 1f;
 
         public string name;
         public Vector2 position;
