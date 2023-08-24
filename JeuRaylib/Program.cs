@@ -200,7 +200,7 @@ namespace Newton
                 {
                     foreach (MassiveBody body in lsMassiveBody)
                     {
-                        DrawLineV(WorldToScreen(body.position), body.speed * 100 + WorldToScreen(body.position), body.color);
+                        DrawLineV(WorldToScreen(body.position), body.speed * 10 + WorldToScreen(body.position), body.color);
                     }
                 }
 
