@@ -34,6 +34,8 @@ Si l'on click sur une planète on obtiens des informations complémentaire sur e
 
 Si l'on presse sur A après avoir clicker sur un astre et l'on sera dans son référentielle :
 
+`[alt text](video/ref.gif)`
+
 ## Théorie Physique
 
 ### Trouver le déplacement d'un corp
