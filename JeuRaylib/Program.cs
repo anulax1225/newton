@@ -95,7 +95,6 @@ namespace Newton
                 {
                     body.position += dest;
                 }
-                Console.WriteLine($"cam {cam.target} body {WorldToScreen(lsMassiveBody[targetIndex].position)}");
             }
         }
 
@@ -109,10 +108,11 @@ namespace Newton
         }
         private void ShowCommand()
         {
-            DrawText("Test.", (int)(cam.offset.X / 2f * cam.zoom), -screenHeight, (int)(40 / cam.zoom), Color.WHITE);
-            DrawText("Press V to see the bodys speed Vector.", (int)(cam.target.X - 1499), (int)(cam.target.Y / cam.zoom - 900), (int)(40 / cam.zoom), Color.WHITE);
-            DrawText("Left click on a body to get additional info.", (int)(cam.target.X - 1499), (int)(cam.target.Y - 800), 40, Color.WHITE);
-            DrawText("Press M to hide/show the menu.", (int)(cam.target.X - 1499), (int)(cam.target.Y - 700), 40, Color.WHITE);
+            int fontSize = 20;
+            DrawText("Simulation de Newton.", (int)(cam.target.X - 750/cam.zoom), (int)(cam.target.Y - 500 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
+            DrawText("Press V to see the bodys speed Vector.", (int)(cam.target.X - 750 / cam.zoom), (int)(cam.target.Y - 450 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
+            DrawText("Left click on a body to get additional info.", (int)(cam.target.X - 750 / cam.zoom), (int)(cam.target.Y - 400 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
+            DrawText("Press M to hide/show the menu.", (int)(cam.target.X - 750 / cam.zoom), (int)(cam.target.Y - 350 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
         }
 
         public int start()
@@ -145,12 +145,14 @@ namespace Newton
                 //-----------------------------------------------------
                 MouvCamRelativ(camTarget);
                 float mouseWheelScroll = GetMouseWheelMove();
-                if (mouseWheelScroll > 0)
+                if (mouseWheelScroll > 0 && cam.zoom < 2.1)
                 {
+                    Console.WriteLine(cam.zoom);
                     cam.zoom += 0.1f;
                 }
-                if (mouseWheelScroll < 0)
+                if (mouseWheelScroll < 0 && cam.zoom > 0.2)
                 {
+                    Console.WriteLine(cam.zoom);
                     cam.zoom -= 0.1f;
                 }
 
