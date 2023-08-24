@@ -34,7 +34,7 @@ Si l'on click sur une planète on obtiens des informations complémentaire sur e
 
 Si l'on presse sur A après avoir clicker sur un astre et l'on sera dans son référentielle :
 
-<img src="video/ref.gif" width="300" height="200">
+<img src="video/ref.gif" width="450" height="300">
 
 ## Théorie Physique
 
