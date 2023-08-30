@@ -9,7 +9,10 @@
 
 #### Librairie 
 
-* Raylib.h ``` dotnet add package Raylib```
+* Raylib 
+```powershell
+	dotnet add package Raylib
+```
 
 ## Contexte 
 

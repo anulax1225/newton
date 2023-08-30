@@ -11,39 +11,148 @@ using static Raylib_cs.Raylib;
 
 namespace Newton
 {
-    public class Program
+    public class Game
     {
         public static int Main()
         {
-            GUISpatialManager2D spm = new GUISpatialManager2D();
-            spm.start();
+            SpatialManager2DRender spm = new SpatialManager2DRender(1500, 1000);
+            spm.Start();
             return 0;
         }
     }
 
-    public class GUISpatialManager2D
+    public class SpatialManager2DRender
     {
-        Camera2D cam = new Camera2D();
-        const int screenWidth = 1500;
-        const int screenHeight = 1000;
-        bool camFixed = true;
+        int screenWidth;
+        int screenHeight;
 
-        List<MassiveBody> lsMassiveBody = new List<MassiveBody>();
+        private bool isCamFixed = true;
+        private bool isInfoHidden = false;
+        private bool isPaused = false;
 
+        private int indexClick = -1;
+        private int camTarget = -1;
+
+        private List<MassiveBody> lstBody = new List<MassiveBody>();
+        private Camera2D cam = new Camera2D();
+        public SpatialManager2DRender(uint screenWidth, uint screenHeight)
+        {
+            this.screenWidth = (int)(screenWidth);
+            this.screenHeight = (int)(screenHeight);
+            this.Init();
+        }
+
+        private void Init()
+        {
+            // Initialization of the camera
+            this.cam.offset = new Vector2(this.screenWidth / 2, this.screenHeight / 2);
+            this.cam.zoom = 0.5f;
+            InitWindow(this.screenWidth, this.screenHeight, "Simu de Newton");
+            // Set our game to run at 60 frames-per-second
+            SetTargetFPS(60);
+
+            // Creating objects of the game
+            this.lstBody.Add(GenerateBody("lune corva", 0, 520, 5, 1f, -9f, 0, Color.VIOLET));
+            this.lstBody.Add(GenerateBody("Troulaxia", 0, -450, 18, 4, 4.6f, 0, Color.GOLD));
+            this.lstBody.Add(GenerateBody("Moncul", 0, 0, 50, 46, 0.1f, 0.1f, Color.RED));
+        }
+
+        public void Start()
+        {
+            // Main game loop
+            while (!WindowShouldClose())
+            {
+                // Update
+                //-----------------------------------------------------
+                this.MouvCamRelativ();
+                this.GetUserInput();
+
+                // Draw
+                //-----------------------------------------------------
+                BeginDrawing();
+                BeginMode2D(this.cam);
+                ClearBackground(Color.BLACK);
+
+                if (!this.isInfoHidden)
+                {
+                    this.ShowCommand();
+                }
+                if (this.indexClick >= 0)
+                {
+                    this.DrawParamInfo(this.lstBody[this.indexClick]);
+                }
+                if (!this.isPaused)
+                {
+                    this.MouvBody();
+                }
+                if (IsKeyPressed(KeyboardKey.KEY_V))
+                {
+                    foreach (MassiveBody body in this.lstBody)
+                    {
+                        DrawLineV(this.WorldToScreen(body.position), body.speed * 10 + this.WorldToScreen(body.position), body.color);
+                    }
+                }
+                foreach (MassiveBody body in this.lstBody)
+                {
+                    DrawCircleV(this.WorldToScreen(body.position), body.radius, body.color);
+                }
+
+                EndMode2D();
+                EndDrawing();
+                //-----------------------------------------------------
+            }
+            // De-Initialization
+            CloseWindow();
+        }
+
+        private void GetUserInput()
+        {
+            float mouseWheelScroll = GetMouseWheelMove();
+
+            if (mouseWheelScroll > 0 && this.cam.zoom < 2.1)
+            {
+                this.cam.zoom += 0.1f;
+            }
+            if (mouseWheelScroll < 0 && this.cam.zoom > 0.2)
+            {
+                this.cam.zoom -= 0.1f;
+            }
+
+            if (IsKeyPressed(KeyboardKey.KEY_SPACE))
+            {
+                this.isPaused = !this.isPaused;
+            }
+
+            if (IsKeyPressed(KeyboardKey.KEY_M))
+            {
+                this.isInfoHidden = !this.isInfoHidden;
+            }
+
+            if (IsKeyPressed(KeyboardKey.KEY_A))
+            {
+                this.camTarget = this.indexClick;
+                this.isCamFixed = !this.isCamFixed;
+            }
+
+            if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
+            {
+                this.indexClick = FindOnTarget(GetMousePosition());
+            }
+        }
 
         private Vector2 WorldToScreen(Vector2 position)
         {
-            Vector2 relativPos = position + cam.target;
+            Vector2 relativPos = position + this.cam.target;
             return relativPos;
         }
 
         private Vector2 ScreenToWorld(Vector2 position)
         {
-            Vector2 relativPos = position - cam.target;
+            Vector2 relativPos = position - this.cam.target;
             return relativPos;
         }
 
-        private MassiveBody GenerateBody(string name, int x, int y, int radius, float masse, float speedX, float speedY, Color color)
+        private static MassiveBody GenerateBody(string name, int x, int y, int radius, float masse, float speedX, float speedY, Color color)
         {
             Vector2 position = new Vector2(x, y);
             Vector2 speed = new Vector2(speedX, speedY);
@@ -53,174 +162,70 @@ namespace Newton
 
         private void MouvBody()
         {
-            foreach (MassiveBody body in this.lsMassiveBody)
+            foreach (MassiveBody body in this.lstBody)
             {
-                body.Graviter(this.lsMassiveBody);
+                body.Graviter(this.lstBody);
             }
 
-            foreach (MassiveBody body in this.lsMassiveBody)
+            foreach (MassiveBody body in this.lstBody)
             {
-                body.ChangePosVitesse();
+                body.ChangePosSpeed();
             }
         }
 
         private int FindOnTarget(Vector2 vMouse)
         {
             vMouse *= 2;
-            vMouse.X -= screenWidth;
-            vMouse.Y -= screenHeight;
+            vMouse.X -= this.screenWidth;
+            vMouse.Y -= this.screenHeight;
 
             int i = 0;
-            foreach (MassiveBody body in lsMassiveBody)
+            foreach (MassiveBody body in this.lstBody)
             {
-                float vMouseNorme = (float)Math.Sqrt(Math.Pow(VectorTools.Vector2Normalize(vMouse - body.position), 2));
-
+                float vMouseNorme = VectorTools.Vector2Normalize(vMouse - body.position);
+                Console.WriteLine($"norme {vMouseNorme}, body {body.name} {body.position}, mouse {vMouse}");
                 if (vMouseNorme <= body.radius)
                 {
                     return i;
                 }
-
                 i++;
             }
             return -1;
         }
 
-        private void MouvCamRelativ(int targetIndex)
+        private void MouvCamRelativ()
         {
-            if (targetIndex >= 0 && targetIndex < lsMassiveBody.Count() && camFixed)
+            if (this.camTarget >= 0 && this.camTarget < this.lstBody.Count() && this.isCamFixed)
             {
-                Vector2 dest = WorldToScreen(lsMassiveBody[targetIndex].position) - cam.target;
-                dest *= -1;
-                foreach (MassiveBody body in lsMassiveBody)
+                Vector2 deltaDestination = WorldToScreen(this.lstBody[this.camTarget].position) - this.cam.target;
+                deltaDestination *= -1;
+                foreach (MassiveBody body in this.lstBody)
                 {
-                    body.position += dest;
+                    body.position += deltaDestination;
                 }
             }
         }
 
         private void DrawParamInfo(MassiveBody body)
         {
-            float textOffset = 40f;
+            float textOffset = 20f / this.cam.zoom;
+            int fontSize = (int)(20 / this.cam.zoom);
             Vector2 pos = WorldToScreen(body.position);
-            DrawText(String.Format("Name : {0}", body.name), (int)(pos.X + body.radius + textOffset), (int)(pos.Y + body.radius + textOffset), 40, Color.WHITE);
-            DrawText(String.Format("Speed : {0}", (float)Math.Sqrt(Math.Pow(VectorTools.Vector2Normalize(body.speed), 2))), (int)(pos.X + body.radius + textOffset), (int)(pos.Y + body.radius + textOffset * 2), 40, Color.WHITE);
-            DrawText(String.Format("Masse : {0}", body.masse), (int)(pos.X + body.radius + textOffset), (int)(pos.Y + body.radius + textOffset * 3), 40, Color.WHITE);
+            DrawText(String.Format("Name : {0}", body.name), (int)(pos.X + body.radius + textOffset), (int)(pos.Y + body.radius + textOffset), fontSize, Color.WHITE);
+            DrawText(String.Format("Speed : {0}", (float)Math.Sqrt(Math.Pow(VectorTools.Vector2Normalize(body.speed), 2))), (int)(pos.X + body.radius + textOffset), (int)(pos.Y + body.radius + textOffset * 2), fontSize, Color.WHITE);
+            DrawText(String.Format("Masse : {0}", body.masse), (int)(pos.X + body.radius + textOffset), (int)(pos.Y + body.radius + textOffset * 3), fontSize, Color.WHITE);
         }
+
         private void ShowCommand()
         {
-            int fontSize = 20;
-            DrawText("Simulation de Newton.", (int)(cam.target.X - 750/cam.zoom), (int)(cam.target.Y - 500 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
-            DrawText("Press V to see the bodys speed Vector.", (int)(cam.target.X - 750 / cam.zoom), (int)(cam.target.Y - 450 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
-            DrawText("Left click on a body to get additional info.", (int)(cam.target.X - 750 / cam.zoom), (int)(cam.target.Y - 400 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
-            DrawText("Press M to hide/show the menu.", (int)(cam.target.X - 750 / cam.zoom), (int)(cam.target.Y - 350 / cam.zoom), (int)(fontSize / cam.zoom), Color.WHITE);
-        }
-
-        public int start()
-        {
-            // Variables
-            //---------------------------------------------------------
-            bool isHidden = false;
-            bool pause = false;
-            int indexClick = -1;
-            int camTarget = -1;
-
-            // Initialization
-            //---------------------------------------------------------
-            cam.offset = new Vector2(screenWidth / 2, screenHeight / 2);
-            cam.zoom = 0.5f;
-            InitWindow(screenWidth, screenHeight, "La loie de Newton");
-            // Set our game to run at 60 frames-per-second
-            SetTargetFPS(60);
-
-            // Creating objects of the game
-            //----------------------------------------------------------
-            lsMassiveBody.Add(GenerateBody("lune corva", 0, 520, 5, 1f, -9f, 0, Color.VIOLET));
-            lsMassiveBody.Add(GenerateBody("Troulaxia", 0, -450, 18, 4, 4.6f, 0, Color.GOLD));
-            lsMassiveBody.Add(GenerateBody("Moncul", 0, 0, 50, 46, 0.1f, 0.1f, Color.RED));
-
-            // Main game loop
-            while (!WindowShouldClose())
-            {
-                // Update
-                //-----------------------------------------------------
-                MouvCamRelativ(camTarget);
-                float mouseWheelScroll = GetMouseWheelMove();
-                if (mouseWheelScroll > 0 && cam.zoom < 2.1)
-                {
-                    Console.WriteLine(cam.zoom);
-                    cam.zoom += 0.1f;
-                }
-                if (mouseWheelScroll < 0 && cam.zoom > 0.2)
-                {
-                    Console.WriteLine(cam.zoom);
-                    cam.zoom -= 0.1f;
-                }
-
-                if (IsKeyPressed(KeyboardKey.KEY_SPACE))
-                {
-                    pause = !pause;
-                }
-
-                if (IsKeyPressed(KeyboardKey.KEY_M))
-                {
-                    isHidden = !isHidden;
-                }
-
-                if (IsKeyPressed(KeyboardKey.KEY_A))
-                {
-                    camTarget = indexClick;
-                    camFixed = !camFixed;
-                }
-
-                if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
-                {
-                    indexClick = FindOnTarget(GetMousePosition());
-                    Console.WriteLine("Boutton {0}", indexClick);
-                }
-
-                // Draw
-                //-----------------------------------------------------
-                BeginDrawing();
-                BeginMode2D(cam);
-                ClearBackground(Color.BLACK);
-
-                if (!isHidden)
-                {
-                    ShowCommand();
-                }
-                if (indexClick >= 0)
-                {
-                    MassiveBody body = lsMassiveBody[indexClick];
-                    DrawParamInfo(body);
-                }
-                if (!pause)
-                {
-                    MouvBody();
-                }
-
-                if (IsKeyDown(KeyboardKey.KEY_V))
-                {
-                    foreach (MassiveBody body in lsMassiveBody)
-                    {
-                        DrawLineV(WorldToScreen(body.position), body.speed * 10 + WorldToScreen(body.position), body.color);
-                    }
-                }
-
-
-                foreach (MassiveBody body in lsMassiveBody)
-                {
-                    DrawCircleV(WorldToScreen(body.position), body.radius, body.color);
-                }
-
-                EndMode2D();
-                EndDrawing();
-                //-----------------------------------------------------
-            }
-            // De-Initialization
-            //---------------------------------------------------------
-            CloseWindow();
-            //----------------------------------------------------------
-            return 0;
+            int fontSize = (int)(20 / cam.zoom);
+            int textOffsetY = (int)(30 / cam.zoom);
+            int textPosX = (int)(this.cam.target.X - this.cam.offset.X / this.cam.zoom);
+            int textPosY = (int)(this.cam.target.Y - this.cam.offset.Y / this.cam.zoom);
+            DrawText("Simulation de Newton.", textPosX, textPosY, fontSize, Color.WHITE);
+            DrawText("Press V to see the bodys speed Vector.", textPosX, textPosY + textOffsetY, fontSize, Color.WHITE);
+            DrawText("Left click on a body to get additional info.", textPosX, textPosY + textOffsetY * 2, fontSize, Color.WHITE);
+            DrawText("Press M to hide/show the menu.", textPosX, textPosY + textOffsetY * 3, fontSize, Color.WHITE);
         }
     }
 
@@ -246,15 +251,15 @@ namespace Newton
         }
         public void Graviter(List<MassiveBody> lsCorpsMassifs)
         {
-            foreach(MassiveBody corp in lsCorpsMassifs)
+            foreach (MassiveBody corp in lsCorpsMassifs)
             {
-                if(corp != this)
+                if (corp != this)
                 {
                     Vector2 vFab = new Vector2(1, 1);
                     Vector2 distance = corp.position - this.position;
 
                     float norme = VectorTools.Vector2Normalize(distance);
-                    float Fab = CONSTGRAVITATION * ((corp.masse)/norme);//Avec une seul masse 
+                    float Fab = CONSTGRAVITATION * ((corp.masse) / norme);//Avec une seul masse 
                     Vector2 Force = vFab * Fab;
 
                     if (this.position.X - corp.position.X >= 0)
@@ -274,10 +279,15 @@ namespace Newton
             }
         }
 
-        public void ChangePosVitesse()
+        public void ChangePosSpeed()
         {
-            //Console.WriteLine("etoile {0} position {1} vitesse {2}", this.masse, this.position, this.vitesse);
+            //Console.WriteLine(this.ToString());
             this.position += this.speed;
+        }
+
+        public override string ToString()
+        {
+            return $"etoile {this.name} position {this.position} vitesse {this.speed}";
         }
     }
 
