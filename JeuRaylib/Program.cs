@@ -311,5 +311,30 @@ namespace Newton
             }
             return new Vector2(x / cpt, y / cpt);
         }
+		
+		public static Vector2 VectorGetRemainder(Vector2 v, Vector2 div)
+        {
+            float X = v.X;
+            float Y = v.Y;
+
+            while (X >= div.X && Y >= div.Y)
+            {
+                if (X >= div.X)
+                {
+                    X -= div.X;
+                }
+
+                if (Y >= div.Y)
+                {
+                    Y -= div.Y;
+                }
+            }
+            return new Vector2(X, Y);
+        }
+		
+		public static Vector2 VectorGetDivision(Vector2 v, Vector2 div)
+        {	
+            return new Vector2(v.X / div.X, v.Y / div.Y);
+        }
     }
 }
