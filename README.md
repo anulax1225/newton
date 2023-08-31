@@ -10,7 +10,7 @@ Permettre à l'utilisateur de controllé la simulation avec précision afin de r
 	- Pour créer une planet unutilisateur doit click sur un boutton. Une class Button as été créer a cet occasion.
  
 * Contrôler leurs vitesses :
-	-
+	- Pour control leur vitesses...
 
 * Contrôler leurs positions :
 	- CLICK gauche sur une planète pour la visé puis CLICK droit pour lui donné une nouvelle position.
