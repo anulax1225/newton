@@ -42,8 +42,7 @@ namespace Newton
         {
             this.screenWidth = (int)(screenWidth);
             this.screenHeight = (int)(screenHeight);
-            btnNewBody = GenerateButton("New body", 1200, -1000, 300, 100, Color.BROWN);
-            this.Init();
+            this.btnNewBody = GenerateButton("New body", 1200, -1000, 300, 100, Color.BROWN);
         }
 
         private void Init()
@@ -60,6 +59,7 @@ namespace Newton
 
         public void Start()
         {
+            this.Init();
             // Main game loop
             while (!WindowShouldClose())
             {
@@ -106,6 +106,21 @@ namespace Newton
             CloseWindow();
         }
 
+        public void Reset(int screenWidth, int screenHeight)
+        {
+            this.screenWidth = screenWidth;
+            this.screenHeight = screenHeight;
+            this.isCamFixed = true;
+            this.isInfoHidden = false;
+            this.isPaused = false;
+            this.zoom = 1f;
+            this.indexClick = -1;
+            this.camTarget = -1;
+            this.lstBtns = new List<Button>();
+            this.lstBodys = new List<MassiveBody>();
+            this.cam = new Camera2D();
+    }
+
         private void GetUserInput()
         {
             float mouseWheelScroll = GetMouseWheelMove();
@@ -140,6 +155,10 @@ namespace Newton
                 this.indexClick = FindOnTarget(vMouse);
             }
 
+            if (CheckCollisionPointRec(vMouse, btnNewBody.GetBorder()))
+            {
+                lstBodys.Add(GenerateBody(MassiveBody.CreatName(), 0, 0, 100, 100, 1f, 1f, Color.RED));
+            }
 
         }
 
@@ -312,6 +331,19 @@ namespace Newton
             //Console.WriteLine(this.ToString());
             this.position += this.speed;
         }
+
+        public static string CreatName()
+        {
+            string[] principal = { "Prime", "Star", "Luna", "Planetrium" };
+            char[] chars = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'Z', 'Y', 'X', 'C' };
+            Random rnd = new Random();
+            string rndName = principal[rnd.Next(principal.Length)];
+            for(int i = 0 ; i < rnd.Next(5); i++) 
+            {
+                rndName += chars[rnd.Next(chars.Length)];
+            }
+            return rndName;
+        } 
 
         public override string ToString()
         {
