@@ -8,9 +8,12 @@ Permettre à l'utilisateur de controllé la simulation avec précision afin de r
 
 * Créer de nouvelles planets :
 	- Pour créer une planet unutilisateur doit click sur un boutton. Une class Button as été créer a cet occasion.
- 
+
+* Contrôler le temps :
+	- Pour controlé le temps je voudrais inclure une bar horizontal qui diminue ou augment le temps qui s'écoule.  
+
 * Contrôler leurs vitesses :
-	- Pour control leur vitesses...
+	- Pour control leur vitesses il faudra clické pour changer le vecteur vitesse.
 
 * Contrôler leurs positions :
 	- CLICK gauche sur une planète pour la visé puis CLICK droit pour lui donné une nouvelle position.
