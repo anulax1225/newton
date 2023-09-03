@@ -16,6 +16,7 @@ namespace GUIInterfaceRaylib
     {
         public string name = "";
         public string error = "";
+        public int fontSize = 40;
         public Vector2 position;
         public Vector2 size;
         protected Rectangle border;

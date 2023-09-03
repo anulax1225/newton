@@ -13,12 +13,16 @@ namespace Newton
 {
     public class SpatialManager2DRender
     {
-        int screenWidth;
-        int screenHeight;
+        private int screenWidth;
+        private int screenHeight;
 
         private bool isCamFixed = true;
         private bool isInfoHidden = false;
-        bool protectedContainer = false;
+        private bool protectedContainer = false;
+        private bool protectedVectorChange = false;
+
+        private bool simuBufferFull = false;
+        private int simuTarget = -1;
 
         private float zoom = 1f;
         private float timeStep = 1f;
@@ -27,10 +31,11 @@ namespace Newton
         private int camTarget = -1;
 
         private Random rnd = new Random();
-        
+
         private List<Button> lstBtns = new List<Button>();
         private List<TextBox> lstTextBox = new List<TextBox>();
         private List<MassiveBody> lstBodys = new List<MassiveBody>();
+        private List<Vector2> lstSimuBodys = new List<Vector2>();
 
         private Camera2D cam = new Camera2D();
         private Vector2 camMouv = new Vector2(0, 0);
@@ -59,17 +64,8 @@ namespace Newton
                 lstBodys.Add(GenerateBody(MassiveBody.CreatName(), 1, 1, rnd.Next(100) + 50, rnd.Next(100) + 10, rnd.Next(9) - rnd.Next(9), rnd.Next(9) - rnd.Next(9), rndColor()));
             }));
 
-            lstTextBox.Add(GenerateTextBox("Change radius", 1200, -850, 300, 100, Color.BROWN, (string input) =>
-            {
-                try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 1000 ? true : false; }
-                catch { return false; }
-            },
-            (string input) =>
-            {
-                if (this.indexClick >= 0) this.lstBodys[this.indexClick].SetRadius(Convert.ToInt32(input));
-            }));
 
-            lstTextBox.Add(GenerateTextBox("Change name", 1200, -700, 300, 100, Color.BROWN, (string input) =>
+            lstTextBox.Add(GenerateTextBox("Name", 1200, -850, 300, 100, Color.BROWN, (string input) =>
             {
                 if (!string.IsNullOrEmpty(input))
                 {
@@ -80,6 +76,26 @@ namespace Newton
             (string input) =>
             {
                 if (this.indexClick >= 0) this.lstBodys[this.indexClick].name = input;
+            }));
+
+            lstTextBox.Add(GenerateTextBox("Radius", 1200, -750, 300, 100, Color.BROWN, (string input) =>
+            {
+                try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 1000 ? true : false; }
+                catch { return false; }
+            },
+            (string input) =>
+            {
+                if (this.indexClick >= 0) this.lstBodys[this.indexClick].SetRadius(Convert.ToInt32(input));
+            }));
+
+            lstTextBox.Add(GenerateTextBox("Surface G", 1200, -650, 300, 100, Color.BROWN, (string input) =>
+            {
+                try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 1000 ? true : false; }
+                catch { return false; }
+            },
+            (string input) =>
+            {
+                if (this.indexClick >= 0) this.lstBodys[this.indexClick].SetSurfaceGravity(Convert.ToInt32(input));
             }));
         }
 
@@ -97,8 +113,7 @@ namespace Newton
 
                 ClearBackground(Color.BLACK);
 
-                this.MouvBody();
-                this.DrawTextBox();
+                this.MouvBody(this.lstBodys, this.timeStep);
                 this.DrawButtons();
                 this.DrawBodys();
                 this.DrawConditional();
@@ -116,7 +131,8 @@ namespace Newton
             this.screenHeight = screenHeight;
             this.isCamFixed = true;
             this.isInfoHidden = false;
-            this.timeStep = 1;
+            this.protectedContainer = false;
+            this.timeStep = 1f;
             this.zoom = 1f;
             this.indexClick = -1;
             this.camTarget = -1;
@@ -125,7 +141,6 @@ namespace Newton
             this.lstBodys = new List<MassiveBody>();
             this.camMouv = new Vector2(0, 0);
             this.cam = new Camera2D();
-            this.Init();
         }
 
         private void GetUserInput()
@@ -146,6 +161,7 @@ namespace Newton
             if (indexClick >= 0) this.GetTextBoxInput(vMouse);
             if (!this.protectedContainer) this.GetKeyCommandInput(vMouse);
         }
+
         private void GetTextBoxInput(Vector2 vMouse)
         {
             foreach (TextBox textBox in lstTextBox)
@@ -153,7 +169,9 @@ namespace Newton
                 if ((textBox.CheckCollison(vMouse) && IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) || textBox.isWriting)
                 {
                     DisableCursor();
+                    textBox.fontSize = 40;
                     textBox.isWriting = true;
+                    textBox.error = "";
                     protectedContainer = true;
                     char input = TextBox.Write();
                     if (input == '\0')
@@ -161,11 +179,11 @@ namespace Newton
                         if (textBox.GetVerification())
                         {
                             textBox.OnValidation();
-                            textBox.error = "";
                         }
                         else
                         {
-                            textBox.error = "Typing error";
+                            textBox.error = "Typing Error";
+                            textBox.fontSize = 20;
                         }
                         protectedContainer = false;
                         textBox.isWriting = false;
@@ -186,11 +204,11 @@ namespace Newton
             float mouseWheelScroll = GetMouseWheelMove();
 
             // Zoom Input
-            if (mouseWheelScroll > 0 && this.zoom < 100)
+            if (mouseWheelScroll < 0 && this.zoom < 100)
             {
                 this.zoom *= 2;
             }
-            if (mouseWheelScroll < 0)
+            if (mouseWheelScroll > 0)
             {
                 this.zoom *= 0.5f;
             }
@@ -220,38 +238,50 @@ namespace Newton
             MouvBodys(camMouv);
 
             //Command Input
-            if (IsKeyPressed(KeyboardKey.KEY_SPACE))
-            {
-                this.timeStep = 0;
-            }
+            if (IsKeyPressed(KeyboardKey.KEY_SPACE)) this.timeStep = 0;
+            if (IsKeyPressed(KeyboardKey.KEY_M)) this.isInfoHidden = !this.isInfoHidden;
+            if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) this.indexClick = FindOnTarget(vMouse);
+            if (IsKeyDown(KeyboardKey.KEY_UP) && !this.protectedVectorChange) timeStep += 0.1f;
+            if (IsKeyDown(KeyboardKey.KEY_DOWN) && !this.protectedVectorChange) timeStep -= 0.1f;
 
-            if (IsKeyPressed(KeyboardKey.KEY_M))
+            if (IsKeyPressed(KeyboardKey.KEY_BACKSPACE))
             {
-                this.isInfoHidden = !this.isInfoHidden;
+                this.lstBodys.Clear();
+                this.indexClick = -1;
             }
-
             if (IsKeyPressed(KeyboardKey.KEY_R))
             {
                 this.camTarget = this.indexClick;
                 this.isCamFixed = !this.isCamFixed;
             }
-            if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT))
-            {
-                this.indexClick = FindOnTarget(vMouse);
-            }
 
-            if (IsKeyDown(KeyboardKey.KEY_UP))
+            if (IsMouseButtonDown(MouseButton.MOUSE_BUTTON_RIGHT) && this.indexClick >= 0 && timeStep == 0 && IsKeyDown(KeyboardKey.KEY_V)) 
             {
-                timeStep += 0.1f;
+                this.lstBodys[indexClick].speed = this.lstBodys[indexClick].position - vMouse/this.zoom;
+                this.simuTarget = this.indexClick;
+                this.protectedVectorChange = true;
             }
-
-            if (IsKeyDown(KeyboardKey.KEY_DOWN))
+            if (IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_RIGHT) && this.protectedVectorChange)
             {
-                timeStep -= 0.1f;
+                this.protectedVectorChange = false;
+                this.simuTarget = -1;
             }
-
+            if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_RIGHT) && this.indexClick >= 0 && !this.protectedVectorChange) this.lstBodys[indexClick].position = vMouse * this.zoom;
         }
 
+        private void Simulate()
+        {
+            if (this.simuTarget >= 0)
+            {
+                List<MassiveBody> cpLstBodys = MassiveBody.CopyList(this.lstBodys);
+                for (int i = 0; i < 10000;  i++)
+                {
+                    MouvBody(cpLstBodys, 4);
+                    this.lstSimuBodys.Add(cpLstBodys[this.simuTarget].position);
+                }
+                this.simuBufferFull = true;
+            }
+        }
         private Color rndColor()
         {
             Color[] colors = { Color.RED, Color.BLUE, Color.YELLOW, Color.LIME, Color.VIOLET, Color.DARKGRAY, Color.BEIGE };
@@ -294,14 +324,14 @@ namespace Newton
             return textBox;
         }
 
-        private void MouvBody()
+        private void MouvBody(List<MassiveBody> lstBodys, float timeStep)
         {
-            foreach (MassiveBody body in this.lstBodys)
+            foreach (MassiveBody body in lstBodys)
             {
-                body.Graviter(this.lstBodys, timeStep);
+                body.Gravity(lstBodys, timeStep);
             }
 
-            foreach (MassiveBody body in this.lstBodys)
+            foreach (MassiveBody body in lstBodys)
             {
                 body.ChangePosSpeed(timeStep);
             }
@@ -343,20 +373,18 @@ namespace Newton
         private void DrawButtons()
         {
             int textOffsetY = -20;
-            int fontSize = 40;
             foreach (Button btn in this.lstBtns)
             {
                 Vector2 screenPos = WorldToScreen(btn.position);
                 DrawRectangle((int)screenPos.X, (int)screenPos.Y, (int)btn.size.X, (int)btn.size.Y, btn.color);
-                int textLenght = MeasureText(btn.name, fontSize);
-                DrawText(btn.name, (int)(screenPos.X + (btn.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + btn.size.Y / 2), fontSize, Color.WHITE);
+                int textLenght = MeasureText(btn.name, btn.fontSize);
+                DrawText(btn.name, (int)(screenPos.X + (btn.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + btn.size.Y / 2), btn.fontSize, Color.WHITE);
             }
         }
 
         private void DrawTextBox()
         {
             int textOffsetY = -20;
-            int fontSize = 40;
             foreach (TextBox textBox in this.lstTextBox)
             {
                 Vector2 screenPos = WorldToScreen(textBox.position);
@@ -364,18 +392,18 @@ namespace Newton
                 string input = textBox.GetBufferInput();
                 if (textBox.isWriting && !(input == null))
                 {
-                    int textLenght = MeasureText(input, fontSize);
-                    DrawText(input, (int)(screenPos.X + (textBox.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + textBox.size.Y / 2), fontSize, Color.WHITE);
-                } 
+                    int textLenght = MeasureText(input, textBox.fontSize);
+                    DrawText(input, (int)(screenPos.X + (textBox.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + textBox.size.Y / 2), textBox.fontSize, Color.WHITE);
+                }
                 else if (!String.IsNullOrEmpty(textBox.error))
                 {
-                    int textLenght = MeasureText(textBox.error, fontSize);
-                    DrawText(textBox.error, (int)(screenPos.X + (textBox.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + textBox.size.Y / 2), fontSize, Color.WHITE);
-                } 
+                    int textLenght = MeasureText(textBox.error, textBox.fontSize);
+                    DrawText(textBox.error, (int)(screenPos.X + (textBox.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + textBox.size.Y / 2), textBox.fontSize, Color.WHITE);
+                }
                 else
                 {
-                    int textLenght = MeasureText(textBox.name, fontSize);
-                    DrawText(textBox.name, (int)(screenPos.X + (textBox.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + textBox.size.Y / 2), fontSize, Color.WHITE);
+                    int textLenght = MeasureText(textBox.name, textBox.fontSize);
+                    DrawText(textBox.name, (int)(screenPos.X + (textBox.size.X - textLenght) / 2), (int)(textOffsetY + screenPos.Y + textBox.size.Y / 2), textBox.fontSize, Color.WHITE);
                 }
             }
         }
@@ -390,19 +418,36 @@ namespace Newton
 
         private void DrawConditional()
         {
-            if (!this.isInfoHidden)
+            if (indexClick >= 0) this.DrawTextBox();
+            if (!this.isInfoHidden) this.DrawCommand();
+            if (this.indexClick >= 0) this.DrawParamInfo(this.lstBodys[this.indexClick]);
+
+            if (IsKeyDown(KeyboardKey.KEY_LEFT_SHIFT))
             {
-                this.DrawCommand();
+                foreach (MassiveBody body in this.lstBodys)
+                {
+                    DrawParamInfo(body);
+                }
             }
-            if (this.indexClick >= 0)
+
+            this.Simulate();
+            if (this.simuBufferFull)
             {
-                this.DrawParamInfo(this.lstBodys[this.indexClick]);
+                Vector2 oldPos = this.lstSimuBodys[0];
+                foreach (Vector2 pos in this.lstSimuBodys)
+                {
+                    DrawLineV(WorldToScreen(oldPos / this.zoom), WorldToScreen(pos / this.zoom), Color.WHITE);
+                    oldPos = pos;
+                }
+                this.simuBufferFull = false;
+                lstSimuBodys.Clear();
             }
+            
             if (IsKeyDown(KeyboardKey.KEY_V))
             {
                 foreach (MassiveBody body in this.lstBodys)
                 {
-                    DrawLineV(this.WorldToScreen(body.position / this.zoom), body.speed * 20 + this.WorldToScreen(body.position / this.zoom), body.color);
+                    DrawLineV(this.WorldToScreen(body.position / this.zoom), body.speed / 0.1f + this.WorldToScreen(body.position / this.zoom), body.color);
                 }
             }
         }
@@ -410,110 +455,55 @@ namespace Newton
         private void DrawParamInfo(MassiveBody body)
         {
             float textOffset = 40f;
-            int fontSize = 30;
+            int fontSize = 35;
             Vector2 pos = WorldToScreen(body.position / this.zoom);
             int textPosX = (int)(pos.X + body.radius + textOffset / this.zoom);
-            DrawText(String.Format("Name : {0}", body.name), textPosX, (int)(pos.Y + body.radius + textOffset), fontSize, Color.WHITE);
-            DrawText(String.Format("Speed : {0}", VectorTools.Vector2Normalize(body.speed), 2), textPosX, (int)(pos.Y + body.radius + textOffset * 2), fontSize, Color.WHITE);
-            DrawText(String.Format("Masse : {0}", body.masse), textPosX, (int)(pos.Y + body.radius + textOffset * 3), fontSize, Color.WHITE);
-            DrawText(String.Format("Radius : {0}", body.radius), textPosX, (int)(pos.Y + body.radius + textOffset * 4), fontSize, Color.WHITE);
+            string[] paramsInfo = 
+            { 
+                "Paramètre info", 
+                String.Format("Name : {0}", body.name), 
+                String.Format("Masse : {0}", body.masse), 
+                String.Format("Radius : {0}", body.radius), 
+                String.Format("Surface G : {0}", body.surfaceG), 
+                String.Format("Speed : {0}", VectorTools.Vector2Normalize(body.speed)), 
+            };
+            for (int i = 0; i < paramsInfo.Length; i++)
+            {
+                DrawText(paramsInfo[i], textPosX, (int)(pos.Y + body.radius + textOffset * i + 1), fontSize, Color.WHITE);
+            }
         }
 
         private void DrawCommand()
         {
-            int fontSize = 35;
-            int textOffsetY = 40;
+            int fontSize = 40;
+            int textOffsetY = 42;
             int textPosX = (int)(this.cam.target.X - this.cam.offset.X / cam.zoom);
             int textPosY = (int)(this.cam.target.Y - this.cam.offset.Y / cam.zoom);
-            DrawText("Newton's simulation :", textPosX, textPosY, fontSize, Color.WHITE);
-            DrawText("Press V to see the bodys speed Vector.", textPosX, textPosY + textOffsetY, fontSize, Color.WHITE);
-            DrawText("Left click on a body to get additional info.", textPosX, textPosY + textOffsetY * 2, fontSize, Color.WHITE);
-            DrawText("Press M to hide/show the menu.", textPosX, textPosY + textOffsetY * 3, fontSize, Color.WHITE);
-            DrawText("Press R to be centered after left clicking.", textPosX, textPosY + textOffsetY * 4, fontSize, Color.WHITE);
-            DrawText("Press UP to Fast forward time. ", textPosX, textPosY + textOffsetY * 5, fontSize, Color.WHITE);
-            DrawText("Press DOWN to go back in time.", textPosX, textPosY + textOffsetY * 6, fontSize, Color.WHITE);
-        }
-    }
+            string[] cmds = {
+                "|---------------------------------------------|",
+                "| Press M to hide/show the menu.",
+                "| Press V to see the bodys speed Vector.",
+                "| Press UP to Fast forward time.",
+                "| Press DOWN to go back in time.",
+                "| Pressed BACK SPACE to erase all objects.",
+                "| You can move with WSAD.",
+                "| You can zoom with scroolwheel",
+                "| Left click on a body to get additional info.",
+                "|---------------------------------------------|",
+                "| After Left click :",
+                "| Press R to be centered on the body.",
+                "| Right click to reposition the body.",
+                "| Maintain right click to change speed.",
+                "| You can change some params,",
+                "| in the textboxs on the right.",
+                "|---------------------------------------------|",
+            };
+            DrawText("Newton's simulation :" , textPosX, textPosY, fontSize, Color.WHITE);
 
-    public class MassiveBody
-    {
-        const float CONSTGRAVITATION = 1f;
-
-        public string name;
-        public Vector2 position;
-        public Vector2 speed;
-        public int radius;
-        public float surfaceG;
-        public float masse;
-        public Color color;
-
-        public MassiveBody(string name, Vector2 position, Vector2 vitesse, int radius, float surfaceG, Color color)
-        {
-            this.name = name;
-            this.position = position;
-            this.speed = vitesse;
-            this.surfaceG = surfaceG;
-            this.color = color;
-            this.SetRadius(radius);
-        }
-
-        public void SetRadius(int radius)
-        {
-            this.radius = radius;
-            this.masse = (surfaceG * radius * radius) / CONSTGRAVITATION;
-        }
-
-        public void Graviter(List<MassiveBody> lstBody, float timeStep)
-        {
-            foreach (MassiveBody body in lstBody)
+            for (int i = 0; i < cmds.Length; i++)
             {
-                if (body != this)
-                {
-                    Vector2 vFab = new Vector2(1, 1);
-                    Vector2 distance = body.position - this.position;
-                    float norme = VectorTools.Vector2Normalize(distance);
-                    float Fab = CONSTGRAVITATION * ((body.masse) / norme);//Avec une seul masse 
-                    Vector2 Force = vFab * Fab;
-
-                    if (this.position.X - body.position.X >= 0)
-                    {
-                        Force.X *= -1;
-                    }
-
-                    if (this.position.Y - body.position.Y >= 0)
-                    {
-                        Force.Y *= -1;
-                    }
-
-                    Vector2 acceleration = Force / this.masse;
-
-                    this.speed += acceleration * timeStep;
-                }
+                DrawText(cmds[i], textPosX, textPosY + textOffsetY * (i + 1), fontSize, Color.WHITE);
             }
-        }
-
-        public void ChangePosSpeed(float timeStep)
-        {
-            //Console.WriteLine(this.ToString());
-            this.position += this.speed * timeStep;
-        }
-
-        public static string CreatName()
-        {
-            string[] principal = { "Prime", "Star", "Luna", "Planetrium" };
-            char[] chars = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'Z', 'Y', 'X', 'C' };
-            Random rnd = new Random();
-            string rndName = principal[rnd.Next(principal.Length)];
-            for (int i = 0; i < rnd.Next(5); i++)
-            {
-                rndName += chars[rnd.Next(chars.Length)];
-            }
-            return rndName;
-        }
-
-        public override string ToString()
-        {
-            return $"etoile {this.name} position {this.position} vitesse {this.speed}";
         }
     }
 }
