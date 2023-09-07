@@ -18,6 +18,7 @@ namespace Newton
         public int radius;
         public float surfaceG;
         public float masse;
+        public bool nonGravity = false;
         public bool showVector = false;
         public bool showParams = false;
         private bool vectorChange = false;
@@ -45,24 +46,12 @@ namespace Newton
             {
                 if (body != this)
                 {
-                    Vector2 vFab = new Vector2(1, 1);
                     Vector2 distance = body.position - this.position;
                     float norme = VectorTools.Vector2Normalize(distance);
                     float Fab = CONSTGRAVITATION * ((body.masse) / norme);//Avec une seul masse 
-                    Vector2 Force = vFab * Fab;
-
-                    if (this.position.X - body.position.X >= 0)
-                    {
-                        Force.X *= -1;
-                    }
-
-                    if (this.position.Y - body.position.Y >= 0)
-                    {
-                        Force.Y *= -1;
-                    }
-
+                    double angle = Math.Atan2(body.position.Y - this.position.Y, body.position.X - this.position.X);
+                    Vector2 Force = new Vector2(Fab * (float)Math.Cos(angle), Fab * (float)Math.Sin(angle));
                     Vector2 acceleration = Force / this.masse;
-
                     this.speed += acceleration * timeStep;
                 }
             }
@@ -149,7 +138,7 @@ namespace Newton
             }
             if (this.vectorChange) 
             { 
-                this.speed = (this.position - inController.vMouse/inController.scene.zoom)/100;
+                this.speed = (this.position - inController.vMouse) / 100;
             }
         }
         public override string ToString()

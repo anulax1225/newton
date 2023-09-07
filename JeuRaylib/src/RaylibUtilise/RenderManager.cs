@@ -47,11 +47,6 @@ namespace Raylib.RaylibUtile
             else
             {
                 // De-Initialization
-                try
-                {
-                    CloseWindow();
-                }
-                catch { }
                 this.isRendering = false;
             }
 	    }

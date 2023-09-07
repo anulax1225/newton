@@ -21,6 +21,7 @@ namespace Newton
         private Scene scene = new Scene();
 
         private float timeStep = 1f;
+        private bool isCamFixed = false;
         private bool doSimulation = false; 
         private MassiveBody? simulationTarget;
         private LineRenderer simulationLine = new LineRenderer();
@@ -43,11 +44,13 @@ namespace Newton
             {
                 this.inputHandler.InputEvent();
                 if (doSimulation) this.Simulate();
-                if (camTarget != null) this.MouvRelativ(camTarget.position, this.lstBodys);
+                else simulationLine.isHidden = true;
+                if (camTarget != null) this.MouvRelativ(camTarget, this.lstBodys);
                 this.MouvBodys(this.inputHandler.targetDirection, this.lstBodys);
                 this.DoInteraction(this.lstBodys, this.timeStep);
                 this.renderManager.RenderFrame();
             }
+            renderManager.Close();
 
         }
         private void Init()
@@ -68,6 +71,84 @@ namespace Newton
             {
                 if (this.scene.zoom > 0.25) this.scene.zoom /= 2;
             });
+        }
+        private void GenerateBody()
+        {
+            MassiveBody body = new MassiveBody(MassiveBody.CreatName());
+            body.position = new Vector2(rnd.Next(5) - rnd.Next(5), rnd.Next(5) - rnd.Next(5));
+            body.radius = rnd.Next(100) + 50;
+            body.SetSurfaceGravity(rnd.Next(100) + 10);
+            body.speed = new Vector2(rnd.Next(9) - rnd.Next(9), rnd.Next(9) - rnd.Next(9));
+            body.color = rndColor();
+            this.lstBodys.Add(body);
+            this.scene.AddGameObject(body);
+        }
+        private void DoInteraction(List<MassiveBody> lstBodys, float timeStep)
+        {
+            foreach (MassiveBody body in lstBodys)
+            {
+                body.Gravity(lstBodys, timeStep);
+            }
+
+            foreach (MassiveBody body in lstBodys)
+            {
+                body.ChangePosSpeed(timeStep);
+            }
+        }
+        private void MouvRelativ(MassiveBody targetBody, List<MassiveBody> lstBodys)
+        {
+            Vector2 deltaDestination = this.renderManager.WorldToScreen(targetBody.position) - this.scene.referencial;
+            deltaDestination *= -1;
+            MouvBodys(deltaDestination, lstBodys);
+        }
+        public void MouvBodys(Vector2 deltaDestination, List<MassiveBody> lstBodys)
+        {
+            foreach (MassiveBody body in lstBodys)
+            {
+                body.position += deltaDestination;
+            }
+        }
+        private void Simulate()
+        {
+            if (simulationTarget != null)
+            {
+                List<Vector2> lstSimuPosition = new List<Vector2>();
+                List<MassiveBody> cpLstBodys = CopyList(this.lstBodys);
+                for (int i = 0; i < 1000; i++)
+                {
+                    DoInteraction(cpLstBodys, 0.5f);
+                    MassiveBody body = cpLstBodys.Where(body => body.name == this.simulationTarget.name).First();
+                    lstSimuPosition.Add(body.position);
+                }
+                if (simulationLine.ptnsOfLine.Count >= 10) 
+                {
+                    this.simulationLine.SetPoints(simulationTarget.position, VectorTools.SmoothTransition(simulationLine.ptnsOfLine, lstSimuPosition), simulationTarget.color);
+                } else
+                {
+                    this.simulationLine.SetPoints(simulationTarget.position, lstSimuPosition, simulationTarget.color);
+                }
+                this.simulationLine.isHidden = false;
+            }
+        }
+        private Color rndColor()
+        {
+            Color[] colors = { Color.RED, Color.BLUE, Color.YELLOW, Color.LIME, Color.VIOLET, Color.DARKGRAY, Color.BEIGE };
+            return colors[rnd.Next(colors.Length)];
+        }
+        public static List<MassiveBody> CopyList(List<MassiveBody> ls)
+        {
+            List<MassiveBody> newLs = new List<MassiveBody>();
+            foreach (MassiveBody body in ls)
+            {
+                MassiveBody newBody = new MassiveBody(body.name);
+                newBody.position = new Vector2(body.position.X, body.position.Y);
+                newBody.radius = body.radius;
+                newBody.SetSurfaceGravity(body.surfaceG);
+                newBody.speed = new Vector2(body.speed.X, body.speed.Y);
+                newBody.color = body.color;
+                newLs.Add(newBody);
+            }
+            return newLs;
         }
         private void InitInterface()
         {
@@ -91,7 +172,7 @@ namespace Newton
                 catch { return false; }
             }, (string input) =>
             {
-                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody)) 
+                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
                 {
                     MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
                     body.SetRadius(Convert.ToInt32(input));
@@ -124,7 +205,7 @@ namespace Newton
                 if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody) && !string.IsNullOrEmpty(input))
                 {
                     MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
-                    body.name = input; 
+                    body.name = input;
                 }
             });
 
@@ -151,7 +232,7 @@ namespace Newton
                 "|---------------------------------------------|",
             });
 
- 
+
             this.simulationLine.isHidden = true;
 
             this.scene.AddGameObject(this.simulationLine);
@@ -188,6 +269,7 @@ namespace Newton
                     this.scene.RemoveGameObject(body);
                 }
                 this.lstBodys.Clear();
+                this.doSimulation = false;
             });
             cleanScene.AddKeyBinder(KeyboardKey.KEY_BACKSPACE, InputState.PRESS);
 
@@ -202,6 +284,7 @@ namespace Newton
             {
                 if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
                 {
+                    this.isCamFixed = true;
                     this.camTarget = (MassiveBody)this.inputHandler.LastActivation;
                 }
             });
@@ -209,6 +292,7 @@ namespace Newton
 
             InputEvent cancelRef = new InputEvent(() =>
             {
+                this.isCamFixed = false;
                 this.camTarget = null;
             });
             cancelRef.AddKeyBinder(KeyboardKey.KEY_T, InputState.PRESS);
@@ -250,85 +334,6 @@ namespace Newton
             simulate.AddKeyBinder(KeyboardKey.KEY_N, InputState.PRESS);
 
             lstInputEvents.AddRange(new List<InputEvent> { paused, hideMenu, cleanScene, goBack, fastForward, newRef, cancelRef, showVector, simulate, moveBody });
-        }
-        private void GenerateBody()
-        {
-            MassiveBody body = new MassiveBody(MassiveBody.CreatName());
-            body.position = new Vector2(rnd.Next(5) - rnd.Next(5), rnd.Next(5) - rnd.Next(5));
-            body.radius = rnd.Next(100) + 50;
-            body.SetSurfaceGravity(rnd.Next(100) + 10);
-            body.speed = new Vector2(rnd.Next(9) - rnd.Next(9), rnd.Next(9) - rnd.Next(9));
-            body.color = rndColor();
-            this.lstBodys.Add(body);
-            this.scene.AddGameObject(body);
-        }
-        private void DoInteraction(List<MassiveBody> lstBodys, float timeStep)
-        {
-            foreach (MassiveBody body in lstBodys)
-            {
-                body.Gravity(lstBodys, timeStep);
-            }
-
-            foreach (MassiveBody body in lstBodys)
-            {
-                body.ChangePosSpeed(timeStep);
-            }
-            this.MouvRelativ(this.scene.referencial, lstBodys);
-        }
-        private void MouvRelativ(Vector2 position, List<MassiveBody> lstBodys)
-        {
-            Vector2 deltaDestination = this.renderManager.WorldToScreen(position) - this.scene.referencial;
-            deltaDestination *= -1;
-            MouvBodys(deltaDestination, lstBodys);
-        }
-        public void MouvBodys(Vector2 deltaDestination, List<MassiveBody> lstBodys)
-        {
-            foreach (MassiveBody body in lstBodys)
-            {
-                body.position += deltaDestination;
-            }
-        }
-        private void Simulate()
-        {
-            if (simulationTarget != null)
-            {
-                List<Vector2> lstSimuPosition = new List<Vector2>();
-                List<MassiveBody> cpLstBodys = CopyList(this.lstBodys);
-                for (int i = 0; i < 2000; i++)
-                {
-                    DoInteraction(cpLstBodys, 1);
-                    MassiveBody body = cpLstBodys.Where(body => body.name == this.simulationTarget.name).First();
-                    lstSimuPosition.Add(body.position);
-                }
-                if (simulationLine.ptnsOfLine.Count >= 1999) 
-                {
-                    this.simulationLine.SetPoints(simulationTarget.position, VectorTools.SmoothTransition(simulationLine.ptnsOfLine, lstSimuPosition), simulationTarget.color);
-                } else
-                {
-                    this.simulationLine.SetPoints(simulationTarget.position, lstSimuPosition, simulationTarget.color);
-                }
-                
-            }
-        }
-        private Color rndColor()
-        {
-            Color[] colors = { Color.RED, Color.BLUE, Color.YELLOW, Color.LIME, Color.VIOLET, Color.DARKGRAY, Color.BEIGE };
-            return colors[rnd.Next(colors.Length)];
-        }
-        public static List<MassiveBody> CopyList(List<MassiveBody> ls)
-        {
-            List<MassiveBody> newLs = new List<MassiveBody>();
-            foreach (MassiveBody body in ls)
-            {
-                MassiveBody newBody = new MassiveBody(body.name);
-                newBody.position = new Vector2(body.position.X, body.position.Y);
-                newBody.radius = body.radius;
-                newBody.SetSurfaceGravity(body.surfaceG);
-                newBody.speed = new Vector2(body.speed.X, body.speed.Y);
-                newBody.color = body.color;
-                newLs.Add(newBody);
-            }
-            return newLs;
         }
     }
 }
