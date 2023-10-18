@@ -1,0 +1,1035 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JeuRaylib</name>
+    </assembly>
+    <members>
+        <member name="T:Raylib.RaylibUtiles.GameObject2D">
+            <summary>
+            Class representing the base of any objects in the scene
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.GameObject2D.name">
+            <summary>
+            Name of the object
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.GameObject2D.position">
+            <summary>
+            Position in the 2D plan
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.GameObject2D.isEnabled">
+            <summary>
+            Indecates if it can be interacted with by the user.
+            If it can it should inplement the interface IActivable2D
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.GameObject2D.isHidden">
+            <summary>
+            Indecates if it will be rendered.
+            If it can it should inplement the interface IRenderable2D 
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.GameObject2D.color">
+            <summary>
+            Color of the object
+            </summary>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.IRenderable2D">
+            <summary>
+            Defines an interface to render a GameObject
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.IRenderable2D.Render(Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            
+            </summary>
+            <param name="rdManager"></param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.IActivable2D">
+            <summary>
+            Defines an interface to interact with a GameObject
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.IActivable2D.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Inplements checks for mouse collison
+            </summary>
+            <param name="mousePtn">mouse point</param>
+            <param name="scene">The scene of the object</param>
+            <returns>result of collison detection</returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.IActivable2D.OnEvent(Raylib.RaylibUtiles.InputHandler)">
+            <summary>
+            Inplements the event called when CheckCollison is true
+            </summary>
+            <param name="inController">Gives access to some trigger flag etc. to control inputs.</param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.Scene2D">
+            <summary>
+            Class representing the virtual enviroment in witch all GameObjects are stored 
+            All classes affecting all the GameObjects will use this
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Scene2D.referencial">
+            <summary>
+            Represents the offset of the scene from the render axis
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Scene2D.backGroundColor">
+            <summary>
+            Back ground color of the scene
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Scene2D.sceneSize">
+            <summary>
+            Scene size (for screen representation, GameObjects can extend out of the scene)
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Scene2D.zoom">
+            <summary>
+            Zoom of the scene
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Scene2D.lstGameObjects">
+            <summary>
+            List of all the GameObjects in the scene
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Scene2D.AddGameObject(Raylib.RaylibUtiles.GameObject2D)">
+            <summary>
+            Adds the new GameObject to the scene
+            </summary>
+            <param name="gameObj">GameObject to add</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Scene2D.RemoveGameObject(Raylib.RaylibUtiles.GameObject2D)">
+            <summary>
+            Removes the GameObject from the scene
+            </summary>
+            <param name="gameObj">GameObject to remove</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Scene2D.GetListGameObjectFromType``1">
+            <summary>
+            Gives access to the GameObject in the scene by there type
+            </summary>
+            <typeparam name="T">Type of GameObject</typeparam>
+            <returns>List of GameObject of type requested</returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Scene2D.MouvGameObjects(System.Numerics.Vector2,System.Collections.Generic.List{Raylib.RaylibUtiles.GameObject2D})">
+            <summary>
+            Translate a list of GameObjects by a distance delta  
+            </summary>
+            <param name="deltaDestination">distance to mouv</param>
+            <param name="lstGameObj">List of GameObjects to translate</param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.InputHandler">
+            <summary>
+            Manages inputs from user and the call back associated
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.scene">
+            <summary>
+            Scene of the game
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.vMouse">
+            <summary>
+            Mouse position in the screen
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.targetDirection">
+            <summary>
+            Sum of the mouvement with the W S A D keys
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.PrioritieObj">
+            <summary>
+            Referances a game object having request prioritie queue
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.asPrioritieObj">
+            <summary>
+            Flag indicating if control must be givent to the ProtectedObj Event
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.LastActivation">
+            <summary>
+            References the last obj requesting it
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.cbScrollUP">
+            <summary>
+            Scrooling behavior(function excuted when the scrolling happens)
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.cbScrollDOWN">
+            <summary>
+            Scrooling behavior(function excuted when the scrolling happens)
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.lstInputBinders">
+            <summary>
+            List of InputEvents activated at every call
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputHandler.eventQueue">
+            <summary>
+            If a GameObject as collided with the mouse adds it to the event queue
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.Init(Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Inits the InputHandler with GameObjects but without InputEvents 
+            </summary>
+            <param name="scene">Scene of the game</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.Init(System.Collections.Generic.List{Raylib.RaylibUtiles.InputEvent},Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Inits the InputHandler with InputEvents and GameObjects
+            </summary>
+            <param name="lstInputBinders">List of InputEvent</param>
+            <param name="scene">Scene of the game</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.SetScrollUP(Raylib.RaylibUtiles.Callback)">
+            <summary>
+            Sets the scroll UP behavior
+            </summary>
+            <param name="callbackUP">Callback function</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.SetScrollDOWN(Raylib.RaylibUtiles.Callback)">
+            <summary>
+            Sets the scroll DOWN behavior
+            </summary>
+            <param name="callbackDOWN">Callback function</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.AddInputEvent(Raylib.RaylibUtiles.InputEvent)">
+            <summary>
+            Adds an InputEvent to the list 
+            </summary>
+            <param name="inputBinder">InputEvent to add</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.RemoveInputEvent(Raylib.RaylibUtiles.InputEvent)">
+            <summary>
+            Removes an InputEvent from the list 
+            </summary>
+            <param name="inputBinder">InputEvent to remove</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.InputEvent">
+            <summary>
+            Main event loop
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.CheckBinder(System.Collections.Generic.Dictionary{Raylib_cs.KeyboardKey,Raylib.RaylibUtiles.InputState},System.Boolean@)">
+            <summary>
+            Checks KeyBind dic for correct key strocks
+            </summary>
+            <param name="keyBinds">KeyBind dic to check</param>
+            <param name="gotInput">Ref flag indicating result of check</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.CheckBinder(System.Collections.Generic.Dictionary{Raylib_cs.MouseButton,Raylib.RaylibUtiles.InputState},System.Boolean@)">
+            <summary>
+            Checks MouseBind dic for correct key strocks
+            </summary>
+            <param name="mouseBinds">MouseBind dic to check</param>
+            <param name="gotInput">Ref flag indicating result of check</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.MovementKey">
+            <summary>
+            Check if the mouvements key have been pressed an ajuste the targetDirection accordingly
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.ScrollWheelCheck">
+            <summary>
+            Checks for mouse wheel scroll an activates a callback 
+            if it's up or down an there is a callback
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputHandler.UpdateMousePosition">
+            <summary>
+            Updates mouse position with offset to fit it in the scene
+            </summary>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.InputState">
+            <summary>
+            Represents a state for a key or mouse input
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputState.PRESS">
+            <summary>
+            Activates when input is pressed once
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputState.DOWN">
+            <summary>
+            Actives while input is pressed
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputState.REALESED">
+            <summary>
+            Activates when input is relased
+            </summary>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.InputEvent">
+            <summary>
+            Class wrapping input binders that are the activators with a callback that is the event  
+            </summary>
+        </member>
+        <member name="P:Raylib.RaylibUtiles.InputEvent.KeyBinds">
+            <summary>
+            Keyboard input binders
+            </summary>
+        </member>
+        <member name="P:Raylib.RaylibUtiles.InputEvent.MouseBinds">
+            <summary>
+            Mouse input binders
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.InputEvent.callback">
+            <summary>
+            Event after input
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputEvent.#ctor(Raylib.RaylibUtiles.Callback)">
+            <summary>
+            Init of a InputBinder
+            </summary>
+            <param name="callback">callback after input</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputEvent.GenerateKeyBind(Raylib_cs.KeyboardKey,Raylib.RaylibUtiles.InputState)">
+            <summary>
+            Generates the dic of Key binds
+            </summary>
+            <param name="key">Key Input</param>
+            <param name="state">State of Input</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputEvent.GenerateMouseBind(Raylib_cs.MouseButton,Raylib.RaylibUtiles.InputState)">
+            <summary>
+            Generates the dic of Mouse binds
+            </summary>
+            <param name="mouseButton">Mouse Input</param>
+            <param name="state">State of Input</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputEvent.AddKeyBinder(Raylib_cs.KeyboardKey,Raylib.RaylibUtiles.InputState)">
+            <summary>
+            Add a Key bind to the dic
+            </summary>
+            <param name="key">Key Input</param>
+            <param name="state">State of Input</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.InputEvent.AddMouseBinder(Raylib_cs.MouseButton,Raylib.RaylibUtiles.InputState)">
+            <summary>
+            Add a Mouse bind to the dic
+            </summary>
+            <param name="mouseButton">Mouse Input</param>
+            <param name="state">State of Input</param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.RenderManager2D">
+            <summary>
+            Class managing all gameobject rendering
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.RenderManager2D.IsRendering">
+            <summary>
+            Flag indicating if the window is rendereds
+            </summary>
+        </member>
+        <member name="P:Raylib.RaylibUtiles.RenderManager2D.Scene">
+            <summary>
+            Scene field
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.RenderManager2D.scene">
+            <summary>
+            Scene attribut 
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.RenderManager2D.cam">
+            <summary>
+            Camera of the world
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.RenderManager2D.blending">
+            <summary>
+            Sets the blending type of the textures
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.RenderManager2D.Init(Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Initialization of the RenderManager
+            </summary>
+            <param name="scene">Scene of the game</param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.RenderManager2D.RenderFrame">
+            <summary>
+            Renders one frame of the scene
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.RenderManager2D.Close">
+            <summary>
+            Closes the Window
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.RenderManager2D.WorldToScreen(System.Numerics.Vector2)">
+            <summary>
+            Gives the position in Raylib axis systeme 
+            </summary>
+            <param name="position">World position</param>
+            <returns>Real position</returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.RenderManager2D.ScreenToWorld(System.Numerics.Vector2)">
+            <summary>
+            Gives the position relitiv to the camera center
+            </summary>
+            <param name="position">Real position</param>
+            <returns>World position</returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.RenderManager2D.MouvRelativ(Raylib.RaylibUtiles.GameObject2D,System.Collections.Generic.List{Raylib.RaylibUtiles.GameObject2D})">
+            <summary>
+            Mouves a list of GameObject relativ to a target GameObject, 
+            making the target gameObject the center of the scene
+            </summary>
+            <param name="targetObj">Referencial Object</param>
+            <param name="lstGameObj">List of GameObjects to mouve relative</param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.Callback">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.Validation`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="input"></param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.Verifier`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.Container2D">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Container2D.fontSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Container2D.size">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Container2D.border">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Container2D.Generate">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Container2D.Resize(System.Numerics.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="newSize"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Container2D.Mouv(System.Numerics.Vector2)">
+            <summary>
+            
+            </summary>
+            <param name="newPosition"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Container2D.GetBorder">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.TextBox">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextBox.error">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextBox.cbVerifier">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextBox.cbOnValidation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextBox.isWriting">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextBox.inputsBuffer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.SetBehavior(Raylib.RaylibUtiles.Validation{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="cbOnValidation"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.SetBehavior(Raylib.RaylibUtiles.Verifier{System.String},Raylib.RaylibUtiles.Validation{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="cbVerifier"></param>
+            <param name="cbOnValidation"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.GetBufferInput">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.GetVerification">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.OnValidation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.FlushBuffer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.WriteToBuffer">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.Render(Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            
+            </summary>
+            <param name="rdManager"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            
+            </summary>
+            <param name="ptn"></param>
+            <param name="scene"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextBox.OnEvent(Raylib.RaylibUtiles.InputHandler)">
+            <summary>
+            
+            </summary>
+            <param name="inController"></param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.Button">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.Button.cbOnClick">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Button.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Button.SetBehavior(Raylib.RaylibUtiles.Callback)">
+            <summary>
+            
+            </summary>
+            <param name="cbOnClick"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Button.Render(Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            
+            </summary>
+            <param name="rdManager"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Button.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            
+            </summary>
+            <param name="ptn"></param>
+            <param name="scene"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.Button.OnEvent(Raylib.RaylibUtiles.InputHandler)">
+            <summary>
+            
+            </summary>
+            <param name="inController"></param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.TextLabel">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextLabel.title">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextLabel.content">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.TextLabel.centerStrings">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextLabel.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextLabel.SetContent(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            
+            </summary>
+            <param name="title"></param>
+            <param name="content"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.TextLabel.Render(Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            
+            </summary>
+            <param name="rdManager"></param>
+        </member>
+        <member name="T:Raylib.RaylibUtiles.LineRenderer">
+            <summary>
+            Class for curved line drawing
+            </summary>
+        </member>
+        <member name="F:Raylib.RaylibUtiles.LineRenderer.ptnsOfLine">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.LineRenderer.SetPoints(System.Numerics.Vector2,System.Numerics.Vector2[],Raylib_cs.Color)">
+            <summary>
+            
+            </summary>
+            <param name="firstPoint"></param>
+            <param name="points"></param>
+            <param name="color"></param>
+        </member>
+        <member name="M:Raylib.RaylibUtiles.LineRenderer.Render(Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            
+            </summary>
+            <param name="rdManager"></param>
+        </member>
+        <member name="T:VectorUtilises.Vector2Tools">
+            <summary>
+            Wrapper classe for static 2D vector utilses. 
+            </summary>
+        </member>
+        <member name="M:VectorUtilises.Vector2Tools.Magnifie(System.Numerics.Vector2)">
+            <summary>
+            Gives the magnitude of a 2D vector by 
+            doing pitagor. Only works in the cartisienne plain.
+            </summary>
+            <param name="v">In vector</param>
+            <returns>Magnitude of vector</returns>
+        </member>
+        <member name="M:VectorUtilises.Vector2Tools.Normelize(System.Numerics.Vector2)">
+            <summary>
+            Gives the normelized vector(Unite vector)
+            </summary>
+            <param name="v">In vector</param>
+            <returns>Unite vector</returns>
+        </member>
+        <member name="M:VectorUtilises.Vector2Tools.SmoothTransitionList(System.Collections.Generic.List{System.Numerics.Vector2},System.Collections.Generic.List{System.Numerics.Vector2})">
+            <summary>
+            Transition smoothly a list of 2D vector to another
+            by averaging x and y position.
+            </summary>
+            <param name="ls1">First List of vectors</param>
+            <param name="ls2">Second List of vectors</param>
+            <returns>Smoothed list</returns>
+        </member>
+        <member name="M:VectorUtilises.Vector2Tools.Average(System.Collections.Generic.List{System.Numerics.Vector2})">
+            <summary>
+            gives a 2D vector from the average of 
+            the 2D vector cordonete in the list 
+            </summary>
+            <param name="lsVectors">List of vectors to average</param>
+            <returns>Averaged vector</returns>
+        </member>
+        <member name="M:VectorUtilises.Vector2Tools.VectorGetRemainder(System.Numerics.Vector2,System.Numerics.Vector2)">
+            <summary>
+            Gives a 2D vector represanting the remainder 
+            from the division of two vectors on the x and y axis. 
+            </summary>
+            <param name="v">vector to divide</param>
+            <param name="div">scaler divider</param>
+            <returns></returns>
+        </member>
+        <member name="T:Newton.MassiveBody">
+            <summary>
+            Class inplementation of a object having gravitation 
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.WEIGHT">
+            <summary>
+            Max iteration of gravitationelle interaction before breaking
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.CONSTGRAVITATION">
+            <summary>
+            Universelle gravitationelle constante of all bodys
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.Speed">
+            <summary>
+            Speed proprety of the body
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.Radius">
+            <summary>
+            Raius proprety of the body
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.SurfaceG">
+            <summary>
+            Surface gravity proprety of the body
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.Masse">
+            <summary>
+            Masse proprety of the body
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.ShowParams">
+            <summary>
+             Flag indicating if the parametres of the body should be rendered
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.ShowVector">
+            <summary>
+            Flag indicating if the speed vector should be rendered
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.texture">
+            <summary>
+            Texture of the planet
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.textureColor">
+            <summary>
+            Color of the texture
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.vectorChange">
+            <summary>
+            Flag indicating if the speed vector is being changed
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.rotation">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.rnd">
+            <summary>
+            Random number generator
+            </summary>
+        </member>
+        <member name="F:Newton.MassiveBody.rotationSpeed">
+            <summary>
+            Gives the rotation speed of the texture
+            </summary>
+        </member>
+        <member name="M:Newton.MassiveBody.#ctor(System.String)">
+            <summary>
+            Instantiation of a body
+            </summary>
+            <param name="name">object name</param>
+        </member>
+        <member name="M:Newton.MassiveBody.SetTextureBody(Raylib_cs.Texture2D)">
+            <summary>
+            Sets the texture of the object;
+            </summary>
+            <param name="texture">texture of the object</param>
+        </member>
+        <member name="M:Newton.MassiveBody.SetRadius(System.Int32)">
+            <summary>
+            Sets the radius of the body and changes the masse correspondly.
+            </summary>
+            <param name="radius">New radius</param>
+        </member>
+        <member name="M:Newton.MassiveBody.SetSurfaceGravity(System.Single)">
+            <summary>
+            Sets the surface gravity of the body and changes the masse correspondly.
+            </summary>
+            <param name="surfaceG">New surface gravity</param>
+        </member>
+        <member name="M:Newton.MassiveBody.Gravity(System.Collections.Generic.List{Newton.MassiveBody},System.Single)">
+            <summary>
+            Loops srout all bodys in the list in parameter, 
+            and changes this speed depending on acceleration du to the attraction with other bodys.    
+            </summary>
+            <param name="lstBody">List of bodys to interact whit</param>
+            <param name="timeStep">Delta time</param>
+        </member>
+        <member name="M:Newton.MassiveBody.ChangePosSpeed(System.Single)">
+            <summary>
+            Changes it position depending on dynamiques low. 
+            </summary>
+            <param name="timeStep">Delta time</param>
+        </member>
+        <member name="M:Newton.MassiveBody.CreatName">
+            <summary>
+            Creates a random name for a body.
+            </summary>
+            <returns>Random Name</returns>
+        </member>
+        <member name="M:Newton.MassiveBody.Render(Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            Create a rendering process to show the body.
+            </summary>
+            <param name="rdManager">Gives access to some propreties and function usefull for rendering propely</param>
+        </member>
+        <member name="M:Newton.MassiveBody.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Checkes collison of the mouse with the body.
+            </summary>
+            <param name="ptn">Mouse position</param>
+            <param name="scene">Gives access to the scene propeties</param>
+            <returns>returns true if there is a collision</returns>
+        </member>
+        <member name="M:Newton.MassiveBody.OnEvent(Raylib.RaylibUtiles.InputHandler)">
+            <summary>
+            This is the event called when a collision is detected.
+            </summary>
+            <param name="inController">Gives access to some trigger flag etc. to control inputs.</param>
+        </member>
+        <member name="M:Newton.MassiveBody.ToString">
+            <summary>
+            Gives information on body
+            </summary>
+            <returns>body as string</returns>
+        </member>
+        <member name="T:Newton.SpatialManager2D">
+            <summary>
+            Manages all bodys in the scene and the anticipation of there mouves with a line
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.timeStep">
+            <summary>
+            Delta time  
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.isCamFixed">
+            <summary>
+            Flag indicating if every thing is simulated relativ to a body
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.doSimulation">
+            <summary>
+            Flag indicating if anticipated targectory should be computed
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.lstOfAnticipationLines">
+            <summary>
+            List of lineRenderers
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.lstBodys">
+            <summary>
+            List of all the bodyes in the scene
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.lstSimuPosition">
+            <summary>
+            Map of computed position in the futur
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.scene">
+            <summary>
+            Scene of the game
+            </summary>
+        </member>
+        <member name="F:Newton.SpatialManager2D.rnd">
+            <summary>
+            Random number generator
+            </summary>
+        </member>
+        <member name="M:Newton.SpatialManager2D.Init(Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Initialisis the SpatialManager with the game scene
+            </summary>
+            <param name="scene">Game scene</param>
+        </member>
+        <member name="M:Newton.SpatialManager2D.GenerateBody(Raylib_cs.Texture2D)">
+            <summary>
+            Generates a New Body with random parameters
+            </summary>
+        </member>
+        <member name="M:Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List{Newton.MassiveBody},System.Single,Newton.MassiveBody,Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            First makes the bodyes interact with all other bodyes to modifie speed,
+            then makes the bodyes change there position depending on speed,
+            then recenters every thing reletiv the refbody.
+            The first two operations are done parrallely on the computer. 
+            </summary>
+            <param name="lstBodys">List of all the bodys in the scene</param>
+            <param name="timeStep">Delta time for the calculation</param>
+            <param name="relBody">Referencial body</param>
+            <param name="renderManager">To get the methode enabling transposition of all element from the point of reference</param>
+        </member>
+        <member name="M:Newton.SpatialManager2D.SimulateCPU(Newton.MassiveBody,Raylib.RaylibUtiles.RenderManager2D)">
+            <summary>
+            Simulates the positions of the bodys in the futur to render it as a line
+            </summary>
+            <param name="relBody">Possible referencial body</param>
+            <param name="renderManager">To give access to Relativ mouvement of object</param>
+        </member>
+        <member name="M:Newton.SpatialManager2D.RndColor">
+            <summary>
+            Gives a random color from the set
+            </summary>
+            <returns>Random color</returns>
+        </member>
+        <member name="M:Newton.SpatialManager2D.CopyList(System.Collections.Generic.List{Newton.MassiveBody})">
+            <summary>
+            Makes a copy of a List of MassiveBody and all the bodys in it
+            </summary>
+            <param name="ls">List to copy</param>
+            <returns>Copied list</returns>
+        </member>
+        <member name="T:Newton.GameManager">
+            <summary>
+            Class managing the game flow
+            </summary>
+        </member>
+        <member name="F:Newton.GameManager.scene">
+            <summary>
+            Global scene of the game contei
+            </summary>
+        </member>
+        <member name="F:Newton.GameManager.renderManager">
+            <summary>
+            Rendering component of the game
+            </summary>
+        </member>
+        <member name="F:Newton.GameManager.inputHandler">
+            <summary>
+            Input Control compotent of the game
+            </summary>
+        </member>
+        <member name="F:Newton.GameManager.spatialManager">
+            <summary>
+            Physique engine of the game
+            </summary>
+        </member>
+        <member name="F:Newton.GameManager.camTarget">
+            <summary>
+            Is the target body of the camera. 
+            Every thing will rendered based on this position
+            if it's not null.
+            </summary>
+        </member>
+        <member name="F:Newton.GameManager.showVector">
+            <summary>
+            Indicates if the bodys vector should show there vectors
+            </summary>
+        </member>
+        <member name="M:Newton.GameManager.#ctor(System.UInt32,System.UInt32,Raylib.RaylibUtiles.RenderManager2D,Raylib.RaylibUtiles.Scene2D)">
+            <summary>
+            Creates an instance of the simmulation
+            with the rendering an input control.
+            </summary>
+            <param name="width">Screen width</param>
+            <param name="height">Screen height</param>
+            <param name="renderManager">Passed on render</param>
+            <param name="scene">Passed on scene</param>
+        </member>
+        <member name="M:Newton.GameManager.Start">
+            <summary>
+            Main game loop
+            </summary>
+        </member>
+        <member name="M:Newton.GameManager.SetHiddenSimuLines(System.Boolean)">
+            <summary>
+            Hides or show all the simulation lines from the
+            games depending on the parameter.
+            </summary>
+            <param name="isHidden">Flag for the lines</param>
+        </member>
+        <member name="M:Newton.GameManager.Init">
+            <summary>
+            Initializes the scene and all it's GameObjects by calling InitInterface, 
+            the input events with InitInputEvents then add them to the inputHandler,
+            the physique engine and the Render Manager.
+            And set the scrolling behavior.
+            </summary>
+        </member>
+        <member name="M:Newton.GameManager.InitInterface">
+            <summary>
+            Initializing All interface components and there callback if 
+            there Interactive.
+            </summary>
+        </member>
+        <member name="M:Newton.GameManager.InitInputEvents">
+            <summary>
+            Set all the keyboard and mouse behavior and theres callbacks
+            </summary>
+            <returns>List of all the inputs control</returns>
+        </member>
+        <member name="T:Newton.GameMenu">
+            <summary>
+            Game Menu class, staticty typed
+            </summary>
+        </member>
+        <member name="M:Newton.GameMenu.Main">
+            <summary>
+            Main loop of the menu
+            </summary>
+        </member>
+        <member name="M:Newton.GameMenu.Init">
+            <summary>
+            Init of the menu components
+            </summary>
+        </member>
+    </members>
+</doc>

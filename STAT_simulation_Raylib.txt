@@ -1,0 +1,43 @@
+L'algorithme lent, l'est car nous calculons les interactions de chanque la planets avec chaque planets. 
+Puis se processus est répéter le nombre de fois que l'on veux simuler en avant. Pour se benchmark cet valeur est de 1000.
+Donc cet algorithme fait (O) 1000n^2. n = nbPlanet 
+Si l'on ne simule pas  cet algo fait plutot (O) n^2. 
+
+Benchmark des planets faire sur un i9 10700k.
+-----------------------------------------------------------------
+-----------------------------------------------------------------
+
+Nb Bodys | time to simulate(ms)
+-----------------------------------------------------------------
+Serial code : 
+2        | 0-2
+5        | 1-9
+10       | 5-23
+20  	 | 20-30
+40       | 100-115
+50       | 140-150
+60       | 200-205
+100      | 605-620
+
+nb d'etoile dans la scène avant perte visible de performance(sans simuler): 800
+Inbuvable : 1500
+-----------------------------------------------------------------
+CPU pararrel code : 
+10 		 |0-1
+20       |25-30
+40       |70-80
+50       |85-95
+60       |110-115
+70       |125-130
+80       |145-155
+90 		 |165-170
+100      |175-185
+
+nb d'etoile dans la scène avant perte visible de performance(sans simuler): 4000
+Inbuvable : 6000
+Note: près de 90% du processeur utilisée.
+-----------------------------------------------------------------
+CPU parallel + triche :
+la triche est de limité de le nombre de planet qui intéragisse ensemble pour se concentrer sur les 100 plus massive.
+nb d'etoile dans la scène avant perte visible de performance(sans simuler): 25000
+

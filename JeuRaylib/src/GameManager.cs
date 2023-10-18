@@ -1,339 +1,335 @@
-﻿using Raylib_cs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using Raylib.RaylibUtile;
-using VectorUtilises;
+﻿/*******************************************************************************************
+Projet Raylib pour l'atelier de première saison.
+Auteur: Vinayak Ambigapathy
+Date: Septembre 2023
+********************************************************************************************/
+using Raylib.RaylibUtiles;
+using Raylib_cs;
 using static Raylib_cs.Raylib;
+using System.Numerics;
 
-namespace Newton
+namespace Newton;
+
+/// <summary>
+/// Class managing the game flow
+/// </summary>
+class GameManager
 {
-    public class SpatialManager2D
+    /// <summary>
+    /// Global scene of the game contei
+    /// </summary>
+    private Scene2D scene;
+    /// <summary>
+    /// Rendering component of the game
+    /// </summary>
+    private RenderManager2D renderManager;
+    /// <summary>
+    /// Input Control compotent of the game
+    /// </summary>
+    private InputHandler inputHandler = new InputHandler();
+    /// <summary>
+    /// Physique engine of the game
+    /// </summary>
+    private SpatialManager2D spatialManager = new SpatialManager2D();
+    /// <summary>
+    /// Is the target body of the camera. 
+    /// Every thing will rendered based on this position
+    /// if it's not null.
+    /// </summary>
+    private MassiveBody? camTarget;
+    /// <summary>
+    /// Indicates if the bodys vector should show there vectors
+    /// </summary>
+    private bool showVector = false;
+
+    private Texture2D planetTexture; 
+    private Texture2D backTexture;
+
+    /// <summary>
+    /// Creates an instance of the simmulation
+    /// with the rendering an input control.
+    /// </summary>
+    /// <param name="width">Screen width</param>
+    /// <param name="height">Screen height</param>
+    /// <param name="renderManager">Passed on render</param>
+    /// <param name="scene">Passed on scene</param>
+    public GameManager(uint width, uint height, RenderManager2D renderManager, Scene2D scene)
     {
-        private Random rnd = new Random();
-
-        private RenderManager renderManager;
-        private InputHandler inputHandler;
-        private Scene scene = new Scene();
-
-        private float timeStep = 1f;
-        private bool isCamFixed = false;
-        private bool doSimulation = false; 
-        private MassiveBody? simulationTarget;
-        private LineRenderer simulationLine = new LineRenderer();
-        private MassiveBody? camTarget;
-        private List<MassiveBody> lstBodys = new List<MassiveBody>();
-        private List<InputEvent> lstInputEvents = new List<InputEvent>();
-        private List<Vector2> lstSimuBodys = new List<Vector2>();
-        private Vector2 camMouv = new Vector2(0, 0);
-
-        public SpatialManager2D(RenderManager renderManager, InputHandler inputController)
+        scene.lstGameObjects.Clear();
+        this.scene = scene;
+        this.scene.sceneSize = new Vector2((int)width, (int)height);
+        this.renderManager = renderManager;
+    }
+    /// <summary>
+    /// Main game loop
+    /// </summary>
+    public void Start()
+    {
+        this.Init();
+        while (renderManager.IsRendering)
         {
-            this.renderManager = renderManager;
-            this.inputHandler = inputController;
+            this.inputHandler.InputEvent();
+            if (this.spatialManager.doSimulation && this.spatialManager.lstBodys.Count > 0) this.spatialManager.SimulateCPU(this.camTarget, renderManager);
+            if (!spatialManager.isCamFixed) Scene2D.MouvGameObjects(this.inputHandler.targetDirection, scene.GetListGameObjectFromType<MassiveBody>());
+            if (this.spatialManager.timeStep != 0) this.spatialManager.DoInteractionParallel(this.spatialManager.lstBodys, this.spatialManager.timeStep, this.camTarget, renderManager);
+            this.renderManager.RenderFrame();
         }
-        public void Start()
+        renderManager.Close();
+        UnloadTexture(planetTexture);
+
+    }
+    /// <summary>
+    /// Hides or show all the simulation lines from the
+    /// games depending on the parameter.
+    /// </summary>
+    /// <param name="isHidden">Flag for the lines</param>
+    private void SetHiddenSimuLines(bool isHidden)
+    {
+        foreach (LineRenderer line in this.spatialManager.lstOfAnticipationLines)
         {
-            this.Init();
-            // Main game loop
-            while (renderManager.isRendering)
+            line.isHidden = isHidden;
+        }
+    }
+    /// <summary>
+    /// Initializes the scene and all it's GameObjects by calling InitInterface, 
+    /// the input events with InitInputEvents then add them to the inputHandler,
+    /// the physique engine and the Render Manager.
+    /// And set the scrolling behavior.
+    /// </summary>
+    private void Init()
+    {
+        this.scene.backGroundColor = Color.BLACK;
+        this.InitInterface();
+        this.inputHandler.Init(this.InitInputEvents(), this.scene);
+        this.renderManager.Init(this.scene);
+        this.planetTexture = LoadTexture("assets/flame.png");
+        this.inputHandler.SetScrollUP(() =>
+        {
+            if (this.scene.zoom < 40) this.scene.zoom *= 2;
+        });
+        this.inputHandler.SetScrollDOWN(() =>
+        {
+            if (this.scene.zoom > 0.0125) this.scene.zoom /= 2;
+        });
+    }
+    /// <summary>
+    /// Initializing All interface components and there callback if 
+    /// there Interactive.
+    /// </summary>
+    private void InitInterface()
+    {
+        Button btnNewbody = new Button("New body");
+        btnNewbody.Mouv(new Vector2(1200, -1000));
+        btnNewbody.Resize(new Vector2(300, 100));
+        btnNewbody.color = Color.BROWN;
+        btnNewbody.SetBehavior(() =>
+        {
+            for (int i = 0; i < 1; i++)
             {
-                this.inputHandler.InputEvent();
-                if (doSimulation) this.Simulate();
-                else simulationLine.isHidden = true;
-                if (camTarget != null) this.MouvRelativ(camTarget, this.lstBodys);
-                this.MouvBodys(this.inputHandler.targetDirection, this.lstBodys);
-                this.DoInteraction(this.lstBodys, this.timeStep);
-                this.renderManager.RenderFrame();
+                this.spatialManager.GenerateBody(this.planetTexture);
             }
-            renderManager.Close();
+            this.spatialManager.lstBodys = this.spatialManager.lstBodys.OrderByDescending(x => x.Masse).ToList();
+            //Console.WriteLine(this.spatialManager.lstBodys.Count);
+        });
 
-        }
-        private void Init()
+        TextBox txtBoxRadius = new TextBox("Radius");
+        txtBoxRadius.Mouv(new Vector2(1200, -850));
+        txtBoxRadius.Resize(new Vector2(300, 100));
+        txtBoxRadius.color = Color.BROWN;
+        txtBoxRadius.SetBehavior((string input) =>
         {
-            this.scene.sceneSize = new Vector2(1500, 1000);
-            this.scene.backGroundColor = Color.BLACK;
-            this.InitInterface();
-            this.InitInputEvents();
-
-            this.inputHandler.Init(this.lstInputEvents, this.scene);
-            this.renderManager.Init(this.scene);
-
-            this.inputHandler.SetScrollUP(() =>
-            {
-                if (this.scene.zoom < 20) this.scene.zoom *= 2;
-            });
-            this.inputHandler.SetScrollDOWN(() =>
-            {
-                if (this.scene.zoom > 0.25) this.scene.zoom /= 2;
-            });
-        }
-        private void GenerateBody()
+            try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 10000 ? true : false; }
+            catch { return false; }
+        }, (string input) =>
         {
-            MassiveBody body = new MassiveBody(MassiveBody.CreatName());
-            body.position = new Vector2(rnd.Next(5) - rnd.Next(5), rnd.Next(5) - rnd.Next(5));
-            body.radius = rnd.Next(100) + 50;
-            body.SetSurfaceGravity(rnd.Next(100) + 10);
-            body.speed = new Vector2(rnd.Next(9) - rnd.Next(9), rnd.Next(9) - rnd.Next(9));
-            body.color = rndColor();
-            this.lstBodys.Add(body);
-            this.scene.AddGameObject(body);
-        }
-        private void DoInteraction(List<MassiveBody> lstBodys, float timeStep)
-        {
-            foreach (MassiveBody body in lstBodys)
+            if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
             {
-                body.Gravity(lstBodys, timeStep);
+                MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
+                body.SetRadius(Convert.ToInt32(input));
+                this.spatialManager.lstBodys = this.spatialManager.lstBodys.OrderByDescending(x => x.Masse).ToList();
             }
+        });
 
-            foreach (MassiveBody body in lstBodys)
+        TextBox txtBoxSurfG = new TextBox("Surface G");
+        txtBoxSurfG.Mouv(new Vector2(1200, -750));
+        txtBoxSurfG.Resize(new Vector2(300, 100));
+        txtBoxSurfG.color = Color.BROWN;
+        txtBoxSurfG.SetBehavior((string input) =>
+        {
+            try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 10000 ? true : false; }
+            catch { return false; }
+        }, (string input) =>
+        {
+            if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
             {
-                body.ChangePosSpeed(timeStep);
+                MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
+                body.SetSurfaceGravity(Convert.ToInt32(input));
+                this.spatialManager.lstBodys = this.spatialManager.lstBodys.OrderByDescending(x => x.Masse).ToList();
             }
-        }
-        private void MouvRelativ(MassiveBody targetBody, List<MassiveBody> lstBodys)
+        });
+
+        TextBox txtBoxName = new TextBox("Name");
+        txtBoxName.Mouv(new Vector2(1200, -650));
+        txtBoxName.Resize(new Vector2(300, 100));
+        txtBoxName.color = Color.BROWN;
+        txtBoxName.SetBehavior((string input) =>
         {
-            Vector2 deltaDestination = this.renderManager.WorldToScreen(targetBody.position) - this.scene.referencial;
-            deltaDestination *= -1;
-            MouvBodys(deltaDestination, lstBodys);
-        }
-        public void MouvBodys(Vector2 deltaDestination, List<MassiveBody> lstBodys)
-        {
-            foreach (MassiveBody body in lstBodys)
+            if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody) && !string.IsNullOrEmpty(input))
             {
-                body.position += deltaDestination;
+                MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
+                body.name = input;
             }
-        }
-        private void Simulate()
+        });
+
+        TextLabel lbMenu = new TextLabel("Menu");
+        lbMenu.fontSize = 28;
+        lbMenu.Mouv(new Vector2(-1500, -1000));
+        lbMenu.SetContent("Commades :", new List<string> {
+            "|---------------------------------------------------------|",
+            "| Press M to hide/show the menu.",
+            "| Press V to see the bodys speed Vector.",
+            "| Press the UP and DOWN arrows to change time.",
+            "| Pressed BACK SPACE to erase all objects.",
+            "| You can move with W S A D.",
+            "| You can zoom with the scroolwheel.",
+            "| Maintain Left mouse button to change speed.",
+            "|---------------------------------------------|",
+            "| Right click on a body to get focus.",
+            "|---------------------------------------------|",
+            "| After Right click :",
+            "| Press R to be centered on the body.",
+            "| Press T to cancel centering.",
+            "| Press on the scrollwheel to reposition the body.",
+            "| You can change some params, in the textboxs on the right.",
+            "|---------------------------------------------------------|",
+        });
+
+        this.scene.AddGameObject(btnNewbody);
+        this.scene.AddGameObject(txtBoxSurfG);
+        this.scene.AddGameObject(txtBoxRadius);
+        this.scene.AddGameObject(txtBoxName);
+        this.scene.AddGameObject(lbMenu);
+    }
+    /// <summary>
+    /// Set all the keyboard and mouse behavior and theres callbacks
+    /// </summary>
+    /// <returns>List of all the inputs control</returns>
+    private List<InputEvent> InitInputEvents()
+    {
+        InputEvent fastForward = new InputEvent(() =>
         {
-            if (simulationTarget != null)
+            if (this.spatialManager.timeStep < 1000) this.spatialManager.timeStep += 1;
+        });
+        fastForward.AddKeyBinder(KeyboardKey.KEY_UP, InputState.DOWN);
+
+        InputEvent goBack = new InputEvent(() =>
+        {
+            if (this.spatialManager.timeStep > -1000) this.spatialManager.timeStep -= 1;
+        });
+        goBack.AddKeyBinder(KeyboardKey.KEY_DOWN, InputState.DOWN);
+
+        InputEvent paused = new InputEvent(() =>
+        {
+            this.spatialManager.timeStep = 0;
+        });
+        paused.AddKeyBinder(KeyboardKey.KEY_SPACE, InputState.PRESS);
+
+        InputEvent cleanScene = new InputEvent(() =>
+        {
+            foreach (MassiveBody body in this.spatialManager.lstBodys)
             {
-                List<Vector2> lstSimuPosition = new List<Vector2>();
-                List<MassiveBody> cpLstBodys = CopyList(this.lstBodys);
-                for (int i = 0; i < 1000; i++)
-                {
-                    DoInteraction(cpLstBodys, 0.5f);
-                    MassiveBody body = cpLstBodys.Where(body => body.name == this.simulationTarget.name).First();
-                    lstSimuPosition.Add(body.position);
-                }
-                if (simulationLine.ptnsOfLine.Count >= 10) 
-                {
-                    this.simulationLine.SetPoints(simulationTarget.position, VectorTools.SmoothTransition(simulationLine.ptnsOfLine, lstSimuPosition), simulationTarget.color);
-                } else
-                {
-                    this.simulationLine.SetPoints(simulationTarget.position, lstSimuPosition, simulationTarget.color);
-                }
-                this.simulationLine.isHidden = false;
+                this.scene.RemoveGameObject(body);
             }
-        }
-        private Color rndColor()
-        {
-            Color[] colors = { Color.RED, Color.BLUE, Color.YELLOW, Color.LIME, Color.VIOLET, Color.DARKGRAY, Color.BEIGE };
-            return colors[rnd.Next(colors.Length)];
-        }
-        public static List<MassiveBody> CopyList(List<MassiveBody> ls)
-        {
-            List<MassiveBody> newLs = new List<MassiveBody>();
-            foreach (MassiveBody body in ls)
+            foreach(LineRenderer line in this.spatialManager.lstOfAnticipationLines)
             {
-                MassiveBody newBody = new MassiveBody(body.name);
-                newBody.position = new Vector2(body.position.X, body.position.Y);
-                newBody.radius = body.radius;
-                newBody.SetSurfaceGravity(body.surfaceG);
-                newBody.speed = new Vector2(body.speed.X, body.speed.Y);
-                newBody.color = body.color;
-                newLs.Add(newBody);
+                this.scene.RemoveGameObject(line);
             }
-            return newLs;
-        }
-        private void InitInterface()
+            this.spatialManager.lstOfAnticipationLines.Clear();
+            this.spatialManager.lstBodys.Clear();
+            this.spatialManager.doSimulation = false;
+        });
+        cleanScene.AddKeyBinder(KeyboardKey.KEY_BACKSPACE, InputState.PRESS);
+
+        InputEvent hideMenu = new InputEvent(() =>
         {
-            //Interface Object
-            Button btnNewbody = new Button("New body");
-            btnNewbody.Mouv(new Vector2(1200, -1000));
-            btnNewbody.Resize(new Vector2(300, 100));
-            btnNewbody.color = Color.BROWN;
-            btnNewbody.SetBehavior(() =>
-            {
-                if (this.lstBodys.Count < 20) this.GenerateBody();
-            });
+            GameObject2D gameObject = this.scene.lstGameObjects.Where(gameObject => gameObject.name == "Menu").First();
+            gameObject.isHidden = !gameObject.isHidden;
+        });
+        hideMenu.AddKeyBinder(KeyboardKey.KEY_M, InputState.PRESS);
 
-            TextBox txtBoxRadius = new TextBox("Radius");
-            txtBoxRadius.Mouv(new Vector2(1200, -850));
-            txtBoxRadius.Resize(new Vector2(300, 100));
-            txtBoxRadius.color = Color.BROWN;
-            txtBoxRadius.SetBehavior((string input) =>
-            {
-                try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 1000 ? true : false; }
-                catch { return false; }
-            }, (string input) =>
-            {
-                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
-                {
-                    MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
-                    body.SetRadius(Convert.ToInt32(input));
-                }
-            });
-
-            TextBox txtBoxSurfG = new TextBox("Surface G");
-            txtBoxSurfG.Mouv(new Vector2(1200, -750));
-            txtBoxSurfG.Resize(new Vector2(300, 100));
-            txtBoxSurfG.color = Color.BROWN;
-            txtBoxSurfG.SetBehavior((string input) =>
-            {
-                try { return Convert.ToInt32(input) > 0 && Convert.ToInt32(input) < 1000 ? true : false; }
-                catch { return false; }
-            }, (string input) =>
-            {
-                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
-                {
-                    MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
-                    body.SetSurfaceGravity(Convert.ToInt32(input));
-                }
-            });
-
-            TextBox txtBoxName = new TextBox("Name");
-            txtBoxName.Mouv(new Vector2(1200, -650));
-            txtBoxName.Resize(new Vector2(300, 100));
-            txtBoxName.color = Color.BROWN;
-            txtBoxName.SetBehavior((string input) =>
-            {
-                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody) && !string.IsNullOrEmpty(input))
-                {
-                    MassiveBody body = (MassiveBody)this.inputHandler.LastActivation;
-                    body.name = input;
-                }
-            });
-
-            TextLabel lbMenu = new TextLabel("Menu");
-            lbMenu.fontSize = 30;
-            lbMenu.Mouv(new Vector2(-1500, -1000));
-            lbMenu.SetContent("Commades :", new List<string> {
-                "|---------------------------------------------|",
-                "| Press M to hide/show the menu.",
-                "| Press V to see the bodys speed Vector.",
-                "| Press UP to Fast forward time.",
-                "| Press DOWN to go back in time.",
-                "| Pressed BACK SPACE to erase all objects.",
-                "| You can move with WSAD.",
-                "| You can zoom with scroolwheel",
-                "| Left click on a body to get additional info.",
-                "|---------------------------------------------|",
-                "| After Left click :",
-                "| Press R to be centered on the body.",
-                "| Right click to reposition the body.",
-                "| Maintain right click to change speed.",
-                "| You can change some params,",
-                "| in the textboxs on the right.",
-                "|---------------------------------------------|",
-            });
-
-
-            this.simulationLine.isHidden = true;
-
-            this.scene.AddGameObject(this.simulationLine);
-            this.scene.AddGameObject(btnNewbody);
-            this.scene.AddGameObject(txtBoxSurfG);
-            this.scene.AddGameObject(txtBoxRadius);
-            this.scene.AddGameObject(txtBoxName);
-            this.scene.AddGameObject(lbMenu);
-        }
-        private void InitInputEvents()
+        InputEvent newRef = new InputEvent(() =>
         {
-            InputEvent fastForward = new InputEvent(() =>
+            if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
             {
-                this.timeStep += 0.1f;
-            });
-            fastForward.AddKeyBinder(KeyboardKey.KEY_UP, InputState.DOWN);
-
-            InputEvent goBack = new InputEvent(() =>
+                this.spatialManager.isCamFixed = true;
+                this.camTarget = (MassiveBody)this.inputHandler.LastActivation;
+            }
+            int i = 0;
+            foreach(GameObject2D gameObject in spatialManager.lstBodys)
             {
-                this.timeStep -= 0.1f;
-            });
-            goBack.AddKeyBinder(KeyboardKey.KEY_DOWN, InputState.DOWN);
-
-            InputEvent paused = new InputEvent(() =>
-            {
-                this.timeStep = 0;
-            });
-            paused.AddKeyBinder(KeyboardKey.KEY_SPACE, InputState.PRESS);
-
-            InputEvent cleanScene = new InputEvent(() =>
-            {
-                foreach (MassiveBody body in this.lstBodys)
+                if(gameObject == this.camTarget)
                 {
-                    this.scene.RemoveGameObject(body);
+                    this.spatialManager.lstOfAnticipationLines[i].isHidden = true;
+                    break;
                 }
-                this.lstBodys.Clear();
-                this.doSimulation = false;
-            });
-            cleanScene.AddKeyBinder(KeyboardKey.KEY_BACKSPACE, InputState.PRESS);
+                i++;
+            }
+        });
+        newRef.AddKeyBinder(KeyboardKey.KEY_R, InputState.PRESS);
 
-            InputEvent hideMenu = new InputEvent(() =>
+        InputEvent cancelRef = new InputEvent(() =>
+        {
+            this.spatialManager.isCamFixed = false;
+            this.camTarget = null;
+            int i = 0;
+            foreach (GameObject2D gameObject in spatialManager.lstBodys)
             {
-                GameObject gameObject = this.scene.lstGameObjects.Where(gameObject => gameObject.name == "Menu").First();
-                gameObject.isHidden = !gameObject.isHidden;
-            });
-            hideMenu.AddKeyBinder(KeyboardKey.KEY_M, InputState.PRESS);
-
-            InputEvent newRef = new InputEvent(() =>
-            {
-                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
+                if (gameObject == this.camTarget)
                 {
-                    this.isCamFixed = true;
-                    this.camTarget = (MassiveBody)this.inputHandler.LastActivation;
+                    this.spatialManager.lstOfAnticipationLines[i].isHidden = false;
+                    break;
                 }
-            });
-            newRef.AddKeyBinder(KeyboardKey.KEY_R, InputState.PRESS);
+                i++;
+            }
+        });
+        cancelRef.AddKeyBinder(KeyboardKey.KEY_T, InputState.PRESS);
 
-            InputEvent cancelRef = new InputEvent(() =>
+        InputEvent showVector = new InputEvent(() =>
+        {
+            this.showVector = !this.showVector;
+            foreach (MassiveBody body in this.spatialManager.lstBodys)
             {
-                this.isCamFixed = false;
-                this.camTarget = null;
-            });
-            cancelRef.AddKeyBinder(KeyboardKey.KEY_T, InputState.PRESS);
+                body.ShowVector = this.showVector;
+            }
+        });
+        showVector.AddKeyBinder(KeyboardKey.KEY_V, InputState.PRESS);
 
-            InputEvent showVector = new InputEvent(() =>
+
+        InputEvent hideParams = new InputEvent(() =>
+        {
+            foreach (MassiveBody body in this.spatialManager.lstBodys)
             {
-                foreach (MassiveBody body in this.lstBodys)
-                {
-                    body.showVector = true;
-                }
-            });
-            showVector.AddKeyBinder(KeyboardKey.KEY_V, InputState.PRESS);
+                body.ShowParams = false;
+            }
+        });
+        hideParams.AddKeyBinder(KeyboardKey.KEY_ENTER, InputState.PRESS);
 
-
-            InputEvent hideParams = new InputEvent(() =>
+        InputEvent moveBody = new InputEvent(() =>
+        {
+            if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
             {
-                foreach (MassiveBody body in this.lstBodys)
-                {
-                    body.showParams = false;
-                }
-            });
-            hideParams.AddKeyBinder(KeyboardKey.KEY_ENTER, InputState.PRESS);
+                this.inputHandler.LastActivation.position = this.inputHandler.vMouse * this.scene.zoom;
+            }
+        });
+        moveBody.AddMouseBinder(MouseButton.MOUSE_BUTTON_MIDDLE, InputState.DOWN);
 
-            InputEvent moveBody = new InputEvent(() =>
-            {
-                if (this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody))
-                {
-                    this.inputHandler.LastActivation.position = this.inputHandler.vMouse * this.scene.zoom;
-                }
-            });
-            moveBody.AddMouseBinder(MouseButton.MOUSE_BUTTON_MIDDLE, InputState.PRESS);
+        InputEvent simulate = new InputEvent(() =>
+        {
+            this.spatialManager.doSimulation = !this.spatialManager.doSimulation;
+            this.SetHiddenSimuLines(!this.spatialManager.doSimulation);
+        });
+        simulate.AddKeyBinder(KeyboardKey.KEY_N, InputState.PRESS);
 
-            InputEvent simulate = new InputEvent(() =>
-            {
-                this.doSimulation = !this.doSimulation;
-                this.simulationLine.isHidden = !this.simulationLine.isHidden;
-                if (this.doSimulation && this.inputHandler.LastActivation != null && this.inputHandler.LastActivation.GetType() == typeof(MassiveBody)) this.simulationTarget = (MassiveBody)this.inputHandler.LastActivation;
-            });
-            simulate.AddKeyBinder(KeyboardKey.KEY_N, InputState.PRESS);
-
-            lstInputEvents.AddRange(new List<InputEvent> { paused, hideMenu, cleanScene, goBack, fastForward, newRef, cancelRef, showVector, simulate, moveBody });
-        }
+        return new List<InputEvent> { paused, hideMenu, cleanScene, goBack, fastForward, newRef, cancelRef, showVector, simulate, moveBody };
     }
 }
