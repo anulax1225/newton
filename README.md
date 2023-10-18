@@ -83,13 +83,10 @@ $\vec{v\tiny{1}}=\vec{v\tiny{0}}+\vec{a}$
 
 Cet équation nous informe que avec les conditions cité au dessus, la vitesse est égal à la vitesse précédente + l'accélération.
 
-  
-
 ### Conséquence
 
 #### Inertie
-Si l'on reprends la formule *V1 = V0 + →a* l'on remarquera que si la vitesse est nulle au départ les corp ne pourront que s'écraser l'un dans l'autre. Il sera donc nécessaire pour obtenir une belle simulation de donner une vitesse initial à nos corps.
+Si l'on reprends la formule $\vec{v\tiny{1}}=\vec{v\tiny{0}}+\vec{a}$*V1 = V0 + →a* l'on remarquera que si la vitesse est nulle au départ les corp ne pourront que s'écraser l'un dans l'autre. Il sera donc nécessaire pour obtenir une belle simulation de donner une vitesse initial à nos corps.
 
-#### Distance nul
-De plus si deux astres on exactement la même position, la division  *G * Ma * Mb / d^2* donnera une division par zéro ce qui nous donnera l'infinie. Curieusement cela ne pose pas de problème en pratique quand lim x => 0, la vitesse augmente exponentiellement vers l'infinie se qui la propulse loin du  Δd = 0. Mais cela veux aussi dire qu'il est impossible de rassembler en un point infinitésimal d'espace, se qui est le principe d'un troue noir.
-
+#### Vitesse de la lumière
+La vitesse de libération d'un corp, est la vitesse qu'il doit atteindre pour pouvoir se libérer de l'attraction d'un autre corp plus massif, par exemple sur terre celle-ci est de 11km/s se qui veux dire qu'une fusée qui veux pouvoir quitté la terre doit atteindre cet vitesse au minimum. Ici dans cet simulation les objects n'ont pas de vitesse maximum atténiable, alors que dans la réalité rien ne peux se déplacé plus vite que la lumière(même pas la lumière elle même). Se qui implique que la création d'un troue noir dans la simulation est impossible car se qui fait qu'un troue noir est se qu'il est, c'est que l'énergie de libération neccessaire à s'en échapper est supérieur à la vitesse de la lumière donc même la lumière ne peux pas s'en échapper.

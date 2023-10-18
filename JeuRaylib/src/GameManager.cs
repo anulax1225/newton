@@ -101,7 +101,7 @@ class GameManager
         this.scene.backGroundColor = Color.BLACK;
         this.InitInterface();
         this.inputHandler.Init(this.InitInputEvents(), this.scene);
-        this.renderManager.Init(this.scene);
+        this.spatialManager.Init(this.scene);
         this.planetTexture = LoadTexture("assets/flame.png");
         this.inputHandler.SetScrollUP(() =>
         {

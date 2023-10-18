@@ -52,7 +52,6 @@ public static class GameMenu
         btnStart.Resize(new Vector2(300,150));
         btnStart.SetBehavior(() =>
         {
-            render.Close();
             GameManager game = new GameManager(1500, 1000, render, scene);
             game.Start();
         });

@@ -1021,6 +1021,21 @@
             Game Menu class, staticty typed
             </summary>
         </member>
+        <member name="F:Newton.GameMenu.scene">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Newton.GameMenu.render">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Newton.GameMenu.controller">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:Newton.GameMenu.Main">
             <summary>
             Main loop of the menu
