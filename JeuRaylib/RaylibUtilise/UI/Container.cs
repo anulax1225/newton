@@ -9,72 +9,54 @@ using System.Numerics;
 namespace Raylib.RaylibUtiles;
 
 /// <summary>
-/// 
-/// </summary>
-public delegate void Callback();
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="T"></typeparam>
-/// <param name="input"></param>
-public delegate void Validation<T>(T input);
-/// <summary>
-/// 
-/// </summary>
-/// <typeparam name="T"></typeparam>
-/// <param name="input"></param>
-/// <returns></returns>
-public delegate bool Verifier<T>(T input);
-
-/// <summary>
-/// 
+/// The container base class for most the UI 
 /// </summary>
 public abstract class Container2D : GameObject2D
 {
     /// <summary>
-    /// 
+    /// Size of the UI object font
     /// </summary>
     public int fontSize = 40;
     /// <summary>
-    /// 
+    /// Size of the container
     /// </summary>
     public Vector2 size;
     /// <summary>
-    /// 
+    /// Collision box
     /// </summary>
-    protected Rectangle border;
+    protected Rectangle collisionBox;
     /// <summary>
-    /// 
+    /// Generates the collision box
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Collision box</returns>
     protected Rectangle Generate()
     {
         return new Rectangle((int)this.position.X, (int)this.position.Y, (int)this.size.X, (int)this.size.Y);
     }
     /// <summary>
-    /// 
+    /// Resizes the container
     /// </summary>
-    /// <param name="newSize"></param>
+    /// <param name="newSize">New size</param>
     public void Resize(Vector2 newSize)
     {
         this.size = newSize;
-        this.border = Generate();
+        this.collisionBox = Generate();
     }
     /// <summary>
-    /// 
+    /// Mouves the container
     /// </summary>
-    /// <param name="newPosition"></param>
+    /// <param name="newPosition">New position</param>
     public void Mouv(Vector2 newPosition)
     {
         this.position = newPosition;
-        this.border = Generate();
+        this.collisionBox = Generate();
     }
     /// <summary>
-    /// 
+    /// Assesor to the collision box
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Collision box</returns>
     public Rectangle GetBorder()
     {
-        return this.border;
+        return this.collisionBox;
     }
 }

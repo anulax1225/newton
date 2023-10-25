@@ -36,7 +36,7 @@ public class TextLabel : Container2D, IRenderable2D
         this.title = "";
         this.position = new Vector2(0, 0);
         this.size = new Vector2(0, 0);
-        this.border = Generate();
+        this.collisionBox = Generate();
     }
     /// <summary>
     /// 
@@ -58,7 +58,7 @@ public class TextLabel : Container2D, IRenderable2D
         Vector2 pos = rdManager.WorldToScreen(this.position);
         int textLenght = MeasureText(this.title, this.fontSize);
         if (centerStrings) pos.X = pos.X + (this.size.X - textLenght) / 2;
-        DrawRectangleRec(this.border, color);
+        DrawRectangleRec(this.collisionBox, color);
         DrawText(title, (int)pos.X, (int)pos.Y, fontSize, Color.WHITE);
         for (int i = 0; i < content.Count(); i++)
         {

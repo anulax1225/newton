@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>F:\NEWTON\JeuRaylib\src\doc.xml</DocumentationFile>
+    <DocumentationFile>.\JeuRaylib\src\doc.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

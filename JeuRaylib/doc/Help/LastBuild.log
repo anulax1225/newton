@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2023.7.8.0" projectFile="D:\newton\JeuRaylib\doc\mydoc.shfbproj" started="25.10.2023 11:40:09">
+<buildStep step="Initializing">
+The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder&#39;
+Locating components in the following folder(s):
+    D:\newton\JeuRaylib\doc
+    C:\ProgramData\EWSoftware\Sandcastle Help File Builder\Components and Plug-Ins
+    C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components
+Using framework reflection data for &#39;.NET Framework 4.7.2&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Data\.NETFramework&#39;
+Using presentation style &#39;Default2022&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022&#39;
+Loading and initializing plug-ins...
+Website Table of Contents Generator Version 2023.7.8.0
+Copyright &#169; 2006-2023, Eric Woodruff, All Rights Reserved
+</buildStep>
+<buildStep step="ClearWorkFolder">
+Clearing working folder...
+-------------------------------
+Clearing any prior web/markdown output...
+</buildStep>
+<buildStep step="ValidatingDocumentationSources">
+Validating and copying documentation source information
+Source: D:\newton\JeuRaylib\doc\doc.xml
+Source: D:\newton\JeuRaylib\bin\Release\net6.0\JeuRaylib.exe
+    Found assembly &#39;D:\newton\JeuRaylib\bin\Release\net6.0\JeuRaylib.exe&#39;
+Source: D:\newton\JeuRaylib\bin\Release\net6.0\JeuRaylib.dll
+    Found assembly &#39;D:\newton\JeuRaylib\bin\Release\net6.0\JeuRaylib.dll&#39;
+
+Copying XML comments files
+    D:\newton\JeuRaylib\doc\doc.xml -&gt; D:\newton\JeuRaylib\doc\Help\Working\doc.xml
+</buildStep>
+<buildStep step="GenerateSharedContent">
+Generating shared content files (en-US, Anglais (&#201;tats-Unis))...
+    Last step completed in 00:00:00.0010
+</buildStep>
+<buildStep step="GenerateApiFilter">
+Generating API filter for MRefBuilder...
+    Last step completed in 00:00:00.0090
+</buildStep>
+<buildStep step="GenerateReflectionInfo">
+Generating reflection information...
+[C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\amd64\MSBuild.exe - GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+La g‚n‚ration a d‚marr‚ 25.10.2023 11:40:10.
+
+Projet &quot;D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj&quot; sur le noud 1 (cibles par d‚faut).
+PrepareForBuild:
+  Cr‚ation du r‚pertoire &quot;obj\Debug\&quot;.
+GenerateBindingRedirects:
+  Aucune redirection de liaison sugg‚r‚e … partir de ResolveAssemblyReferences.
+GenerateRefInfo:
+  Microsoft.Build (v17.6.3+07e2947214f1a9f28a3517762c939d5bebb5f525)
+  &#184; Microsoft Corporation. All rights reserved.
+  No source code context base path specified.  Source context information is unavailable.
+  Loaded 1 assemblies for reflection and 1 dependency assemblies.
+MRefBuilder : warning : Ignoring unresolved assembly reference: System.Numerics.Vectors (System.Numerics.Vectors, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a) required by JeuRaylib [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+MRefBuilder : warning : Ignoring unresolved assembly reference: System.Collections (System.Collections, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a) required by JeuRaylib [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+MRefBuilder : warning : Unexpected parameter type Void.  This may be an issue (missing reference assembly?).  Declaring method: Newton.MassiveBody.Gravity(System.Collections.Generic.List`1,System.Void) [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+MRefBuilder : warning : Unexpected parameter type Void.  This may be an issue (missing reference assembly?).  Declaring method: Newton.SpatialManager2D.CopyList(System.Void) [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+MRefBuilder : warning : Unexpected parameter type Void.  This may be an issue (missing reference assembly?).  Declaring method: Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List`1,System.Void,Newton.MassiveBody,System.Single) [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+MRefBuilder : warning : Unexpected parameter type Void.  This may be an issue (missing reference assembly?).  Declaring method: Raylib.RaylibUtiles.InputHandler.Init(System.Collections.Generic.List`1,System.Void) [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+MRefBuilder : warning : Unexpected parameter type Void.  This may be an issue (missing reference assembly?).  Declaring method: VectorUtilises.Vector2Tools.SmoothTransitionList(System.Void,System.Numerics.Vector2) [D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj]
+  Wrote information on 3 namespaces, 20 types, and 122 members
+  Merging duplicate type and member information
+  Merged 0 duplicate type(s) and 0 duplicate member(s)
+G‚n‚ration du projet &quot;D:\newton\JeuRaylib\doc\Help\Working\GenerateRefInfo-9a122531-ccd5-46dd-97d9-b4765d69ad61.proj&quot; termin‚e (cibles par d‚faut).
+    Last step completed in 00:00:01.4016
+</buildStep>
+<buildStep step="ApplyDocumentModel">
+Applying document model to reflection output...
+    Last step completed in 00:00:00.0340
+</buildStep>
+<buildStep step="AddApiTopicFilenames">
+Adding topic filenames to API members...
+    Last step completed in 00:00:00.0360
+</buildStep>
+<buildStep step="GenerateApiTopicManifest">
+Generating API topic manifest...
+    Last step completed in 00:00:00.0360
+</buildStep>
+<buildStep step="GenerateNamespaceSummaries">
+Generating namespace summary information...
+    Last step completed in 00:00:00.0060
+</buildStep>
+<buildStep step="CopyAdditionalContent">
+Copying additional content files...
+No additional content to copy
+    Last step completed in 00:00:00.0010
+</buildStep>
+<buildStep step="MergeTablesOfContents">
+Merging conceptual and additional tables of contents...
+    Last step completed in 00:00:00.0000
+</buildStep>
+<buildStep step="GenerateIntermediateTableOfContents">
+Generating intermediate table of contents file for API content...
+Generating conceptual content intermediate TOC file...
+    Last step completed in 00:00:00.0300
+</buildStep>
+<buildStep step="CreateBuildAssemblerConfigs">
+Creating Sandcastle configuration files...
+    Last step completed in 00:00:00.0610
+</buildStep>
+<buildStep step="CombiningIntermediateTocFiles">
+Combining conceptual and API intermediate TOC files...
+    Last step completed in 00:00:00.0010
+</buildStep>
+<buildStep step="MergeCustomConfigs">
+Merging custom build component configurations
+D:\newton\JeuRaylib\doc\Help\Working\BuildAssembler.config
+  Updating reference topic configurations.
+  No conceptual content.  Removing conceptual content components.
+    Last step completed in 00:00:00.0210
+</buildStep>
+<buildStep step="BuildTopics">
+Building help topics...
+<plugIn name="Website Table of Contents Generator" behavior="Before" priority="1000">
+Loading TOC info and adding unique IDs to parent nodes
+</plugIn>Loading configuration...
+Processing topics...
+SHFB: Warning BE0066: ShowMissingComponent: [N:Newton] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.MassiveBody.Gravity(System.Collections.Generic.List`1,System.Void)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.MassiveBody.Gravity(System.Collections.Generic.List`1,System.Void)] Missing &lt;param name=&quot;lstBody&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.MassiveBody.Gravity(System.Collections.Generic.List`1,System.Void)] Missing &lt;param name=&quot;timeStep&quot;/&gt; documentation
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Newton.MassiveBody.SetTextureBody(Raylib_cs.Texture2D)] Unknown reference link target &#39;T:Raylib_cs.Texture2D&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [F:Newton.MassiveBody.texture] Unknown reference link target &#39;T:Raylib_cs.Texture2D&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [F:Newton.MassiveBody.textureColor] Unknown reference link target &#39;T:Raylib_cs.Color&#39;.
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.CopyList(System.Void)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.CopyList(System.Void)] Missing &lt;returns&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.CopyList(System.Void)] Missing &lt;param name=&quot;ls&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List`1,System.Void,Newton.MassiveBody,System.Single)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List`1,System.Void,Newton.MassiveBody,System.Single)] Missing &lt;param name=&quot;lstBodys&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List`1,System.Void,Newton.MassiveBody,System.Single)] Missing &lt;param name=&quot;timeStep&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List`1,System.Void,Newton.MassiveBody,System.Single)] Missing &lt;param name=&quot;relBody&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.DoInteractionParallel(System.Collections.Generic.List`1,System.Void,Newton.MassiveBody,System.Single)] Missing &lt;param name=&quot;renderManager&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Newton.SpatialManager2D.GenerateBody(Raylib_cs.Texture2D)] Missing &lt;param name=&quot;texture&quot;/&gt; documentation
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Newton.SpatialManager2D.GenerateBody(Raylib_cs.Texture2D)] Unknown reference link target &#39;T:Raylib_cs.Texture2D&#39;.
+SHFB: Warning BE0066: ShowMissingComponent: [N:Raylib.RaylibUtiles] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [T:Raylib.RaylibUtiles.Button] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.#ctor(System.String)] Missing &lt;param name=&quot;name&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;returns&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;param name=&quot;ptn&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;param name=&quot;scene&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.OnEvent(Raylib.RaylibUtiles.InputHandler)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.OnEvent(Raylib.RaylibUtiles.InputHandler)] Missing &lt;param name=&quot;inController&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;param name=&quot;rdManager&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.SetBehavior(Raylib.RaylibUtiles.Callback)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Button.SetBehavior(Raylib.RaylibUtiles.Callback)] Missing &lt;param name=&quot;cbOnClick&quot;/&gt; documentation
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [F:Raylib.RaylibUtiles.Container2D.collisionBox] Unknown reference link target &#39;T:Raylib_cs.Rectangle&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Raylib.RaylibUtiles.Container2D.Generate] Unknown reference link target &#39;T:Raylib_cs.Rectangle&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Raylib.RaylibUtiles.Container2D.GetBorder] Unknown reference link target &#39;T:Raylib_cs.Rectangle&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [F:Raylib.RaylibUtiles.GameObject2D.color] Unknown reference link target &#39;T:Raylib_cs.Color&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Raylib.RaylibUtiles.InputEvent.AddKeyBinder(Raylib_cs.KeyboardKey,Raylib.RaylibUtiles.InputState)] Unknown reference link target &#39;T:Raylib_cs.KeyboardKey&#39;.
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Raylib.RaylibUtiles.InputEvent.AddMouseBinder(Raylib_cs.MouseButton,Raylib.RaylibUtiles.InputState)] Unknown reference link target &#39;T:Raylib_cs.MouseButton&#39;.
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.InputHandler.Init(System.Collections.Generic.List`1,System.Void)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.InputHandler.Init(System.Collections.Generic.List`1,System.Void)] Missing &lt;param name=&quot;lstInputBinders&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.InputHandler.Init(System.Collections.Generic.List`1,System.Void)] Missing &lt;param name=&quot;scene&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.IRenderable2D.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.IRenderable2D.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;param name=&quot;rdManager&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [F:Raylib.RaylibUtiles.LineRenderer.ptnsOfLine] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.LineRenderer.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.LineRenderer.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;param name=&quot;rdManager&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.LineRenderer.SetPoints(System.Numerics.Vector2,System.Numerics.Vector2[],Raylib_cs.Color)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.LineRenderer.SetPoints(System.Numerics.Vector2,System.Numerics.Vector2[],Raylib_cs.Color)] Missing &lt;param name=&quot;firstPoint&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.LineRenderer.SetPoints(System.Numerics.Vector2,System.Numerics.Vector2[],Raylib_cs.Color)] Missing &lt;param name=&quot;points&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.LineRenderer.SetPoints(System.Numerics.Vector2,System.Numerics.Vector2[],Raylib_cs.Color)] Missing &lt;param name=&quot;color&quot;/&gt; documentation
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [M:Raylib.RaylibUtiles.LineRenderer.SetPoints(System.Numerics.Vector2,System.Numerics.Vector2[],Raylib_cs.Color)] Unknown reference link target &#39;T:Raylib_cs.Color&#39;.
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.RenderManager2D.MouvRelativ(Raylib.RaylibUtiles.GameObject2D,System.Collections.Generic.List`1)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.RenderManager2D.MouvRelativ(Raylib.RaylibUtiles.GameObject2D,System.Collections.Generic.List`1)] Missing &lt;param name=&quot;targetObj&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.RenderManager2D.MouvRelativ(Raylib.RaylibUtiles.GameObject2D,System.Collections.Generic.List`1)] Missing &lt;param name=&quot;lstGameObj&quot;/&gt; documentation
+SHFB: Warning BE0066: ResolveReferenceLinksComponent: [F:Raylib.RaylibUtiles.Scene2D.backGroundColor] Unknown reference link target &#39;T:Raylib_cs.Color&#39;.
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Scene2D.MouvGameObjects(System.Numerics.Vector2,System.Collections.Generic.List`1)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Scene2D.MouvGameObjects(System.Numerics.Vector2,System.Collections.Generic.List`1)] Missing &lt;param name=&quot;deltaDestination&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.Scene2D.MouvGameObjects(System.Numerics.Vector2,System.Collections.Generic.List`1)] Missing &lt;param name=&quot;lstGameObj&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;returns&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;param name=&quot;ptn&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.CheckCollison(System.Numerics.Vector2,Raylib.RaylibUtiles.Scene2D)] Missing &lt;param name=&quot;scene&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.OnEvent(Raylib.RaylibUtiles.InputHandler)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.OnEvent(Raylib.RaylibUtiles.InputHandler)] Missing &lt;param name=&quot;inController&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextBox.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;param name=&quot;rdManager&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [T:Raylib.RaylibUtiles.TextLabel] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextLabel.#ctor(System.String)] Missing &lt;param name=&quot;name&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [F:Raylib.RaylibUtiles.TextLabel.centerStrings] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [F:Raylib.RaylibUtiles.TextLabel.content] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextLabel.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextLabel.Render(Raylib.RaylibUtiles.RenderManager2D)] Missing &lt;param name=&quot;rdManager&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextLabel.SetContent(System.String,System.Collections.Generic.List`1)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextLabel.SetContent(System.String,System.Collections.Generic.List`1)] Missing &lt;param name=&quot;title&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:Raylib.RaylibUtiles.TextLabel.SetContent(System.String,System.Collections.Generic.List`1)] Missing &lt;param name=&quot;content&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [F:Raylib.RaylibUtiles.TextLabel.title] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [N:VectorUtilises] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.Average(System.Collections.Generic.List`1)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.Average(System.Collections.Generic.List`1)] Missing &lt;returns&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.Average(System.Collections.Generic.List`1)] Missing &lt;param name=&quot;lsVectors&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.SmoothTransitionList(System.Void,System.Numerics.Vector2)] Missing &lt;summary&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.SmoothTransitionList(System.Void,System.Numerics.Vector2)] Missing &lt;returns&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.SmoothTransitionList(System.Void,System.Numerics.Vector2)] Missing &lt;param name=&quot;ls1&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.SmoothTransitionList(System.Void,System.Numerics.Vector2)] Missing &lt;param name=&quot;ls2&quot;/&gt; documentation
+SHFB: Warning BE0066: ShowMissingComponent: [M:VectorUtilises.Vector2Tools.VectorGetRemainder(System.Numerics.Vector2,System.Numerics.Vector2)] Missing &lt;returns&gt; documentation
+Processed 174 topic(s)
+83 warning(s)
+CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 4 of 15.
+CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 1 of 30.
+ResolveReferenceLinksComponent: 16 entries added to the member ID URL cache.  New cache size: 16 entries
+<plugIn name="Website Table of Contents Generator" behavior="After" priority="1000">
+Generating TOC fragment files
+</plugIn>    Last step completed in 00:00:01.6946
+</buildStep>
+<buildStep step="CopyStandardHelpContent">
+Copying standard help content...
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\bulma.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\bulma.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\bulma.css.map -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\bulma.css.map
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\bulma.min.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\bulma.min.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\font-awesome.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\font-awesome.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\font-awesome.min.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\font-awesome.min.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\ja-JP.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\ja-JP.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\ko-KR.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\ko-KR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\presentationStyle.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\presentationStyle.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\vs.min.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\vs.min.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\zh-CN.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\zh-CN.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\css\zh-TW.css -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\css\zh-TW.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\icons\favicon.ico -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\icons\favicon.ico
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\scripts\clipboard.min.js -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\scripts\clipboard.min.js
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\scripts\highlight.min.js -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\scripts\highlight.min.js
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\scripts\jquery-3.5.1.min.js -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\scripts\jquery-3.5.1.min.js
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\scripts\presentationStyle.js -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\scripts\presentationStyle.js
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-brands-400.ttf -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-brands-400.ttf
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-brands-400.woff2 -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-brands-400.woff2
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-regular-400.ttf -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-regular-400.ttf
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-regular-400.woff2 -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-regular-400.woff2
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-solid-900.ttf -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-solid-900.ttf
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-solid-900.woff2 -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-solid-900.woff2
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-v4compatibility.ttf -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-v4compatibility.ttf
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\webfonts\fa-v4compatibility.woff2 -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\webfonts\fa-v4compatibility.woff2
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\GeneralError.html -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\GeneralError.html
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\index.html -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\index.html
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\PageNotFound.html -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\PageNotFound.html
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\search.html -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\search.html
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\SearchHelp.aspx -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\SearchHelp.aspx
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\SearchHelp.inc.php -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\SearchHelp.inc.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\SearchHelp.php -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\SearchHelp.php
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Components\Default2022\RootWebsiteContent\Web.Config -&gt; D:\newton\JeuRaylib\doc\Help\Working\Output\Website\Web.Config
+    Last step completed in 00:00:00.0360
+</buildStep>
+<buildStep step="GenerateFullTextIndex">
+Generating full-text index for the website...
+
+    Last step completed in 00:00:00.1240
+</buildStep>
+<buildStep step="CopyingWebsiteFiles">
+Copying website files to output folder...
+
+Copied 281 files for the website content
+    Last step completed in 00:00:00.4464
+</buildStep>
+<buildStep step="CleanIntermediates">
+Removing intermediate files...
+    Last step completed in 00:00:00.0500
+</buildStep>
+<buildStep step="Completed">
+
+Build completed successfully at 25.10.2023 11:40:13.  Total time: 00:00:04.5047
+
+</buildStep>
+</shfbBuild>

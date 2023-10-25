@@ -23,21 +23,25 @@ Sur mon interface les corps seront de simple boule de couleur qui bouge en fonct
 
 <img src="img/orbites.png">
 
- Si l'on presse V l'interface nous les vecteurs vitesse associé à chaque corps :
+* Si l'on presse V l'interface nous les vecteurs vitesse associé à chaque corps :
  
 <img src="img/orbitesV.png">
 
-Si l'on click sur une planète on obtiens des informations complémentaire sur elle :
+* Si l'on click sur une planète on obtiens des informations complémentaire sur elle :
 
 <img src="img/orbitesInfo.png">
 
-Si l'on presse sur A après avoir clicker sur un astre et l'on sera dans son référentielle :
+* Si l'on presse sur A après avoir clicker sur un astre et l'on sera dans son référentielle :
 
 <img src="video/ref.gif" width="450" height="300">
 
-Les nouveaux ajoute à faire l'interface une fois les bases physiques posé sont de données le contrôle à l'utilisateur sur la simulation et ces paramètres modifiables. Il est maintenant possible de contrôlé le temps, de créer et modéler de nouvelles planète et de les déplacer à ça guisse. 
+* Les nouveaux ajoute à faire l'interface une fois les bases physiques posé sont de données le contrôle à l'utilisateur sur la simulation et ces paramètres modifiables. Il est maintenant possible de contrôlé le temps, de créer et modéler de nouvelles planète et de les déplacer à ça guisse. 
 
-<img src="video/update.gif" width="450" height="300"
+<img src="video/update.gif" width="450" height="300">
+
+* Les tarjectoire anticiper peuvent activé ou désactivé avec N et ressemble a ceci :
+
+<img src="img/Logo.png" width="450" height="300">
 
 ## Théorie Physique
 

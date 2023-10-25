@@ -10,70 +10,70 @@ using static Raylib_cs.Raylib;
 namespace Raylib.RaylibUtiles;
 
 /// <summary>
-/// 
+/// UI object that handle data retrival from the user
 /// </summary>
 public class TextBox : Container2D, IActivable2D, IRenderable2D
 {
     /// <summary>
-    /// 
+    /// Error message if there is one
     /// </summary>
     public string error = "";
     /// <summary>
-    /// 
+    /// Input verifier callback
     /// </summary>
     private Verifier<string>? cbVerifier;
     /// <summary>
-    /// 
+    /// Input computer callback
     /// </summary>
     private Validation<string>? cbOnValidation;
     /// <summary>
-    /// 
+    /// Flag indicating if the user is actualie writing to the textbox
     /// </summary>
     public bool isWriting = false;
     /// <summary>
-    /// 
+    /// List of the char input
     /// </summary>
     public List<char> inputsBuffer = new List<char>();
 
     /// <summary>
-    /// 
+    /// Textbox constructor with the name 
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="name">Name of the textbox</param>
     public TextBox(string name)
     {
         this.name = name;
         this.position = new Vector2(0, 0);
         this.size = new Vector2(0, 0);
-        this.border = Generate();
+        this.collisionBox = Generate();
     }
     /// <summary>
-    /// 
+    /// Sets the textbox behavior without the verification process
     /// </summary>
-    /// <param name="cbOnValidation"></param>
+    /// <param name="cbOnValidation">Callback on validation</param>
     public void SetBehavior(Validation<string> cbOnValidation) { this.cbOnValidation = cbOnValidation; }
     /// <summary>
-    /// 
+    ///  Sets the textbox behavior with the verification process
     /// </summary>
-    /// <param name="cbVerifier"></param>
-    /// <param name="cbOnValidation"></param>
+    /// <param name="cbVerifier">Callback on verification</param>
+    /// <param name="cbOnValidation">Callback on validation</param>
     public void SetBehavior(Verifier<string> cbVerifier, Validation<string> cbOnValidation)
     {
         this.cbVerifier = cbVerifier;
         this.cbOnValidation = cbOnValidation;
     }
     /// <summary>
-    /// 
+    /// Gives the input buffer as a string
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Input</returns>
     public string GetBufferInput()
     {
         return String.Concat(this.inputsBuffer);
     }
     /// <summary>
-    /// 
+    /// Verifies the input
     /// </summary>
-    /// <returns></returns>
-    public bool GetVerification()
+    /// <returns>Verication</returns>
+    private bool GetVerification()
     {
         if (cbVerifier != null)
         {
@@ -82,9 +82,9 @@ public class TextBox : Container2D, IActivable2D, IRenderable2D
         return true;
     }
     /// <summary>
-    /// 
+    /// Compute the input
     /// </summary>
-    public void OnValidation()
+    private void OnValidation()
     {
         if (cbOnValidation != null)
         {
@@ -92,17 +92,17 @@ public class TextBox : Container2D, IActivable2D, IRenderable2D
         }
     }
     /// <summary>
-    /// 
+    /// Flush the input buffer
     /// </summary>
-    public void FlushBuffer()
+    private void FlushBuffer()
     {
         this.inputsBuffer.Clear();
     }
     /// <summary>
-    /// 
+    /// Check for keyboard inputs and writes to the input buffer
     /// </summary>
-    /// <returns></returns>
-    public char WriteToBuffer()
+    /// <returns>The char pressed</returns>
+    private char WriteToBuffer()
     {
         int keyPressed = GetCharPressed();
         Dictionary<KeyboardKey, char> tbKeyBoard = new Dictionary<KeyboardKey, char> {
@@ -111,13 +111,19 @@ public class TextBox : Container2D, IActivable2D, IRenderable2D
             { KeyboardKey.KEY_C, 'c' }, { KeyboardKey.KEY_D, 'd' }, { KeyboardKey.KEY_E, 'e' }, { KeyboardKey.KEY_F, 'f' }, { KeyboardKey.KEY_G, 'g' }, { KeyboardKey.KEY_H, 'h' }, { KeyboardKey.KEY_I, 'i' },
             { KeyboardKey.KEY_J, 'j' }, { KeyboardKey.KEY_K, 'k' }, { KeyboardKey.KEY_L, 'l' }, { KeyboardKey.KEY_M, 'm' }, { KeyboardKey.KEY_N, 'n' }, { KeyboardKey.KEY_O, 'o' }, { KeyboardKey.KEY_P, 'p' },
             { KeyboardKey.KEY_Q , 'q'}, { KeyboardKey.KEY_R, 'r' }, { KeyboardKey.KEY_S, 's' }, { KeyboardKey.KEY_T, 't' }, { KeyboardKey.KEY_U, 'u' }, { KeyboardKey.KEY_V, 'v' }, { KeyboardKey.KEY_W, 'w' },
-            { KeyboardKey.KEY_X, 'x' }, { KeyboardKey.KEY_Y, 'y' }, { KeyboardKey.KEY_Z, 'z' }, { KeyboardKey.KEY_ENTER, '\0' }
+            { KeyboardKey.KEY_X, 'x' }, { KeyboardKey.KEY_Y, 'y' }, { KeyboardKey.KEY_Z, 'z' }, { KeyboardKey.KEY_ENTER, '\0' }, { KeyboardKey.KEY_BACKSPACE, '#' }
         };
         foreach (var key in tbKeyBoard)
         {
             if (IsKeyPressed(key.Key))
             {
-                this.inputsBuffer.Add(key.Value);
+                if(key.Value == '#')
+                {
+                    this.inputsBuffer.RemoveAt(this.inputsBuffer.Count - 1);
+                } else
+                {
+                    this.inputsBuffer.Add(key.Value);
+                }
                 return key.Value;
             }
 
@@ -125,9 +131,9 @@ public class TextBox : Container2D, IActivable2D, IRenderable2D
         return '$';
     }
     /// <summary>
-    /// 
+    /// Renders the textbox
     /// </summary>
-    /// <param name="rdManager"></param>
+    /// <param name="rdManager">Rendering public interface</param>
     public void Render(RenderManager2D rdManager)
     {
         int textOffsetY = -20;
@@ -151,20 +157,20 @@ public class TextBox : Container2D, IActivable2D, IRenderable2D
         }
     }
     /// <summary>
-    /// 
+    /// Check if the mouse collided with the border
     /// </summary>
-    /// <param name="ptn"></param>
-    /// <param name="scene"></param>
+    /// <param name="ptn">mouse position</param>
+    /// <param name="scene">Game scene</param>
     /// <returns></returns>
     public bool CheckCollison(Vector2 ptn, Scene2D scene)
     {
-        bool check = CheckCollisionPointRec(ptn, this.border);
+        bool check = CheckCollisionPointRec(ptn, this.collisionBox);
         return check;
     }
     /// <summary>
-    /// 
+    /// Handles input from the user
     /// </summary>
-    /// <param name="inController"></param>
+    /// <param name="inController">InputHandling public interface</param>
     public void OnEvent(InputHandler inController)
     {
         if (IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT) || this.isWriting)
@@ -197,7 +203,7 @@ public class TextBox : Container2D, IActivable2D, IRenderable2D
     }
 }
 /// <summary>
-/// 
+/// UI object that handles click input from the user
 /// </summary>
 public class Button : Container2D, IActivable2D, IRenderable2D
 {
@@ -214,7 +220,7 @@ public class Button : Container2D, IActivable2D, IRenderable2D
         this.name = name;
         this.position = new Vector2(0, 0);
         this.size = new Vector2(0, 0);
-        this.border = Generate();
+        this.collisionBox = Generate();
     }
     /// <summary>
     /// 
@@ -244,7 +250,7 @@ public class Button : Container2D, IActivable2D, IRenderable2D
     /// <returns></returns>
     public bool CheckCollison(Vector2 ptn, Scene2D scene)
     {
-        bool check = CheckCollisionPointRec(ptn, this.border);
+        bool check = CheckCollisionPointRec(ptn, this.collisionBox);
         return check;
     }
     /// <summary>

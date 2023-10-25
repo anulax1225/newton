@@ -165,7 +165,7 @@ public class MassiveBody : GameObject2D, IRenderable2D, IActivable2D
     /// <summary>
     /// Create a rendering process to show the body.
     /// </summary>
-    /// <param name="rdManager">Gives access to some propreties and function usefull for rendering propely</param>
+    /// <param name="rdManager">Rendering public interface</param>
     public void Render(RenderManager2D rdManager)
     {
         Vector2 pos = rdManager.WorldToScreen(this.position / rdManager.Scene.zoom);
@@ -218,7 +218,7 @@ public class MassiveBody : GameObject2D, IRenderable2D, IActivable2D
     /// <summary>
     /// This is the event called when a collision is detected.
     /// </summary>
-    /// <param name="inController">Gives access to some trigger flag etc. to control inputs.</param>
+    /// <param name="inController">InputHandling public interface</param>
     public void OnEvent(InputHandler inController)
     {
         if (IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT) && IsKeyDown(KeyboardKey.KEY_V))
