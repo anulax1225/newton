@@ -3,11 +3,11 @@ Projet Raylib pour l'atelier de première saison.
 Auteur: Vinayak Ambigapathy
 Date: Septembre 2023
 ********************************************************************************************/
-using Raylib.RaylibUtiles;
 using Raylib_cs;
 using static Raylib_cs.Raylib;
 using System.Diagnostics;
 using System.Numerics;
+
 
 namespace Newton;
 /// <summary>

@@ -5,7 +5,6 @@ Date: Septembre 2023
 ********************************************************************************************/
 using System.Numerics;
 using Raylib_cs;
-using Raylib.RaylibUtiles;
 
 namespace Newton;
 /// <summary>
@@ -14,15 +13,15 @@ namespace Newton;
 public static class GameMenu
 {
     /// <summary>
-    /// 
+    /// Main scene
     /// </summary>
     static Scene2D scene = new Scene2D();
     /// <summary>
-    /// 
+    /// Main renderer
     /// </summary>
     static RenderManager2D render = new RenderManager2D();
     /// <summary>
-    /// 
+    /// Main controller
     /// </summary>
     static InputHandler controller = new InputHandler();
     /// <summary>

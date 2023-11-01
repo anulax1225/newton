@@ -8,7 +8,7 @@ using Raylib_cs;
 using static Raylib_cs.Raylib;
 
 
-namespace Raylib.RaylibUtiles;
+namespace Newton;
 
 /// <summary>
 /// Class managing all gameobject rendering

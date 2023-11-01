@@ -4,7 +4,7 @@ Auteur: Vinayak Ambigapathy
 Date: Septembre 2023
 ********************************************************************************************/
 using System.Numerics;
-namespace VectorUtilises;
+namespace Newton;
 /// <summary>
 /// Wrapper classe for static 2D vector utilses. 
 /// </summary>

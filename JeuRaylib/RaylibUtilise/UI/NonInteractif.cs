@@ -7,29 +7,29 @@ using Raylib_cs;
 using System.Numerics;
 using static Raylib_cs.Raylib;
 
-namespace Raylib.RaylibUtiles;
+namespace Newton;
 
 /// <summary>
-/// 
+/// Class that renders a Text to the screen
 /// </summary>
 public class TextLabel : Container2D, IRenderable2D
 {
     /// <summary>
-    /// 
+    /// Title of the text
     /// </summary>
     public string title;
     /// <summary>
-    /// 
+    /// Content of the text
     /// </summary>
     public List<string> content = new List<string>();
     /// <summary>
-    /// 
+    /// Flag that indicates if the text should be centred
     /// </summary>
     public bool centerStrings = false;
     /// <summary>
-    /// 
+    /// Textlabel constructor that takes a name
     /// </summary>
-    /// <param name="name"></param>
+    /// <param name="name">Name of the object</param>
     public TextLabel(string name)
     {
         this.name = name;
@@ -39,7 +39,7 @@ public class TextLabel : Container2D, IRenderable2D
         this.collisionBox = Generate();
     }
     /// <summary>
-    /// 
+    /// Sets the content of the Textlabel
     /// </summary>
     /// <param name="title"></param>
     /// <param name="content"></param>
@@ -49,9 +49,9 @@ public class TextLabel : Container2D, IRenderable2D
         this.content = content;
     }
     /// <summary>
-    /// 
+    /// Renders the Textlabel
     /// </summary>
-    /// <param name="rdManager"></param>
+    /// <param name="rdManager">Rendering public interface</param>
     public void Render(RenderManager2D rdManager)
     {
         int textOffsetY = fontSize + 10;
@@ -72,15 +72,15 @@ public class TextLabel : Container2D, IRenderable2D
 public class LineRenderer : GameObject2D, IRenderable2D
 {
     /// <summary>
-    /// 
+    /// Every point of the line
     /// </summary>
     public Vector2[] ptnsOfLine = new Vector2[0];
     /// <summary>
-    /// 
+    /// Sets the point of the line 
     /// </summary>
-    /// <param name="firstPoint"></param>
-    /// <param name="points"></param>
-    /// <param name="color"></param>
+    /// <param name="firstPoint">First point of the line</param>
+    /// <param name="points">An array of all the points of the line</param>
+    /// <param name="color">Color of the line</param>
     public void SetPoints(Vector2 firstPoint, Vector2[] points, Color color)
     {
         this.position = firstPoint;
@@ -88,12 +88,12 @@ public class LineRenderer : GameObject2D, IRenderable2D
         this.color = color;
     }
     /// <summary>
-    /// 
+    /// Renders the line
     /// </summary>
-    /// <param name="rdManager"></param>
+    /// <param name="rdManager">Rendering public interface</param>
     public void Render(RenderManager2D rdManager)
     {
-        Vector2 oldPos = new Vector2(this.position.X, this.position.Y);
+        Vector2 oldPos = this.position;
         foreach (Vector2 ptn in this.ptnsOfLine)
         {
             DrawLineV(rdManager.WorldToScreen(oldPos / rdManager.Scene.zoom), rdManager.WorldToScreen(ptn / rdManager.Scene.zoom), this.color);

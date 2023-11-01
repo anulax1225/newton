@@ -6,7 +6,7 @@ Date: Septembre 2023
 using Raylib_cs;
 using System.Numerics;
 
-namespace Raylib.RaylibUtiles;
+namespace Newton;
 
 /// <summary>
 /// The container base class for most the UI 

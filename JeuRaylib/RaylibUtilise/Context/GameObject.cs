@@ -6,7 +6,7 @@ Date: Septembre 2023
 using System.Numerics;
 using Raylib_cs;
 
-namespace Raylib.RaylibUtiles;
+namespace Newton;
 /// <summary>
 /// Class representing the base of any objects in the scene
 /// </summary>

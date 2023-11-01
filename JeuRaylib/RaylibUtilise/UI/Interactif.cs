@@ -7,7 +7,7 @@ using Raylib_cs;
 using System.Numerics;
 using static Raylib_cs.Raylib;
 
-namespace Raylib.RaylibUtiles;
+namespace Newton;
 
 /// <summary>
 /// UI object that handle data retrival from the user

@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>.\JeuRaylib\src\doc.xml</DocumentationFile>
+    <DocumentationFile>C:\Users\Ambigapathyv\Desktop\newton\JeuRaylib\doc\doc.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

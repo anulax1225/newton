@@ -6,7 +6,7 @@ Date: Septembre 2023
 using Raylib_cs;
 using System.Numerics;
 using static Raylib_cs.Raylib;
-namespace Raylib.RaylibUtiles;
+namespace Newton;
 
 /// <summary>
 /// Manages inputs from user and the call back associated
